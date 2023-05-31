@@ -1,0 +1,28 @@
+// Global
+sudo apt install python3
+sudo apt install ffmpeg
+
+// Node
+sudo apt install nodejs
+npm i -g npm@latest
+npm i -g pm2
+npm i -g nodemon
+npm i -g fluent-ffmpeg
+
+// Python
+sudo apt-get install python3-pip
+pip install -U numpy
+pip install get-stick-bugged-lol
+pip install rembg[gpu]
+
+// Edições
+(
+node_modules/barcode-generator/lib/graphics-canvas.js
+de
+this.canvas = new Canvas(width, height);
+para
+this.canvas = new Canvas.Canvas(width, height);
+)
+
+// Fontes
+Execute todas as fontes que estão no diretório ./Install

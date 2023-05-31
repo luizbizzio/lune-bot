@@ -1,0 +1,42 @@
+{
+	"sent": {
+		"chat": 37315,
+		"gp2": 12643,
+		"sticker": 19373,
+		"image": 7737,
+		"ptt": 1908,
+		"e2e_notification": 913,
+		"notification_template": 750,
+		"document": 251,
+		"vcard": 68,
+		"audio": 4851,
+		"video": 1523,
+		"product": 1,
+		"groups_v4_invite": 1,
+		"template": 13,
+		"buttons_response": 1
+	},
+	"receive": {
+		"chat": 300623,
+		"ptt": 7577,
+		"image": 17543,
+		"video": 8006,
+		"sticker": 147425,
+		"ciphertext": 495,
+		"audio": 790,
+		"product": 147,
+		"oversized": 240,
+		"document": 192,
+		"groups_v4_invite": 84,
+		"vcard": 43,
+		"location": 8,
+		"multi_vcard": 9,
+		"call_log": 12,
+		"payment": 31,
+		"gp2": 385,
+		"e2e_notification": 15,
+		"poll_creation": 2,
+		"notification_template": 5,
+		"list": 2
+	}
+}
