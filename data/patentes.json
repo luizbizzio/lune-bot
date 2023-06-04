@@ -1,0 +1,152 @@
+[
+    {
+        "name": "Copper",
+        "emoji": "🪙",
+        "lv": 0
+    },
+    {
+        "name": "Bronze I",
+        "emoji": "🥉",
+        "lv": 5
+    },
+    {
+        "name": "Bronze II",
+        "emoji": "🥉",
+        "lv": 10
+    },
+    {
+        "name": "Bronze III",
+        "emoji": "🥉",
+        "lv": 15
+    },
+    {
+        "name": "Bronze IV",
+        "emoji": "🥉",
+        "lv": 20
+    },
+    {
+        "name": "Bronze V",
+        "emoji": "🥉",
+        "lv": 25
+    },
+    {
+        "name": "Silver I",
+        "emoji": "🥈",
+        "lv": 30
+    },
+    {
+        "name": "Silver II",
+        "emoji": "🥈",
+        "lv": 35
+    },
+    {
+        "name": "Silver III",
+        "emoji": "🥈",
+        "lv": 40
+    },
+    {
+        "name": "Silver IV",
+        "emoji": "🥈",
+        "lv": 45
+    },
+    {
+        "name": "Silver V",
+        "emoji": "🥈",
+        "lv": 50
+    },
+    {
+        "name": "Gold I",
+        "emoji": "🥇",
+        "lv": 55
+    },
+    {
+        "name": "Gold II",
+        "emoji": "🥇",
+        "lv": 60
+    },
+    {
+        "name": "Gold III",
+        "emoji": "🥇",
+        "lv": 65
+    },
+    {
+        "name": "Gold IV",
+        "emoji": "🥇",
+        "lv": 70
+    },
+    {
+        "name": "Gold V",
+        "emoji": "🥇",
+        "lv": 75
+    },
+    {
+        "name": "Platinum I",
+        "emoji": "🎖️",
+        "lv": 80
+    },
+    {
+        "name": "Platinum II",
+        "emoji": "🎖️",
+        "lv": 85
+    },
+    {
+        "name": "Platinum III",
+        "emoji": "🎖️",
+        "lv": 90
+    },
+    {
+        "name": "Platinum IV",
+        "emoji": "🎖️",
+        "lv": 95
+    },
+    {
+        "name": "Platinum V",
+        "emoji": "🎖️",
+        "lv": 100
+    },
+    {
+        "name": "Diamond I",
+        "emoji": "💎",
+        "lv": 200
+    },
+    {
+        "name": "Diamond II",
+        "emoji": "💎",
+        "lv": 300
+    },
+    {
+        "name": "Diamond III",
+        "emoji": "💎",
+        "lv": 400
+    },
+    {
+        "name": "Diamond IV",
+        "emoji": "💎",
+        "lv": 500
+    },
+    {
+        "name": "Diamond V",
+        "emoji": "💎",
+        "lv": 600
+    },
+    {
+        "name": "Sapphire",
+        "emoji": "🟦",
+        "lv": 700
+    },
+    {
+        "name": "Emerald",
+        "emoji": "🟩",
+        "lv": 800
+    },
+    {
+        "name": "Ruby",
+        "emoji": "🟥",
+        "lv": 900
+    },
+    {
+        "name": "King",
+        "emoji": "👑",
+        "lv": 1000
+    }
+]
