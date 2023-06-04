@@ -4,6 +4,9 @@
 	"defaultPrefix": "#",
 	"executablePath": "/usr/bin/google-chrome-stable",
 	"antispam": false,
+	"spam_limit": 5,
+	"spam_delay": 2000,
+	"block_delay": 10000,
 	"api_keys": {
 		"virus_total": "4a30386f7046a649da12a35d59514417d93dfac2874f07d585c24ed93d99fe94",
   	"bitly": "9927112f30ac99fbf4dcc842fa89af6022bfe936",
