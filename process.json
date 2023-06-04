@@ -1,18 +1,18 @@
 {
-  "name": "Lune Bot",
+  "name": "lune-bot",
   "script": "index.js",
   "watch": [
     "handler",
     "index.js",
-    "process.json"
+    "lib",
+    "settings/config.json"
   ],
-  "ignore_watch": ["node_modules", "lib/*.json", "lib/config", "lib/data", "cookies", "media", "settings", "token", "cookies.json", "json.sqlite", "package.json", "package-lock.json", "session.data.json", "BOT.txt", "pm2-0.log"],
+  "ignore_watch": ["_IGNORE_session", "fonts", "Manual.txt", "node_modules", "settings", "lib/*.json", "data/*.json", "lib/data", "media", "json.sqlite", "package.json", "package-lock.json", "session.data.json", "logs"],
   "exec_mode": "cluster",
   "args": [
     "--color"
   ],
   "log_file": "./logs/pm2.log",
-  "cron_restart": "30 4 * * *",
   "watch_options": {
     "followSymlinks": false
   }

@@ -22,9 +22,6 @@ Cria uma imagem no estilo change my mind.
 *${prefix}img* <Palavra>
 Envia imagens com base em palavras.
 
-*${prefix}deepdream* <Imagem> + <Intensidade>
-Aplica um efeito de deepdream na foto.
-
 *_Envie ${prefix}menu para ver a lista completa de menus!_*`}
 
 
@@ -53,9 +50,6 @@ Create a change my mind style image.
 *${prefix}img* <Word>
 Send images based on words.
 
-*${prefix}deepdream* <Image> + <Value>
-Applies a deepdream effect to the photo.
-
 *_Send ${prefix}menu to see full list of menus!_*`}
 
 
@@ -83,8 +77,5 @@ Crea una imagen de estilo change my mind.
 
 *${prefix}img* <Palabra>
 Envía imágenes basadas en palabras.
-
-*${prefix}deepdream* <Imagen> + <Intensidad>
-Aplica un efecto de sueño profundo a la foto.
 
 *_Enviar ${prefix}menú para ver la lista completa de menús!_*`}

@@ -4,9 +4,6 @@ exports.pt_BR = (pushname, prefix) => {
 *${prefix}tts* <Pt> + <Texto> ou <Marcar mensagem>
 Converte texto em áudio.
 
-*${prefix}print* <Link>
-Captura a tela do site enviado e converte em PDF.
-
 *${prefix}traduzir* <Pt> + <Texto> ou <Marcar mensagem>
 Traduz o texto para diversas línguas.
 
@@ -15,9 +12,6 @@ Informa o clima do local especificado.
 
 *${prefix}sl* <Link>
 Encurta o Link enviado.
-
-*${prefix}colorizer* <Imagem>
-Colore imagens preto e branco.
 
 *${prefix}scan* <Documento> ou <Link>
 Escaneia o arquivo ou Site a procura de vírus.
@@ -59,9 +53,6 @@ exports.en_US = (pushname, prefix) => {
 *${prefix}tts* <En> + <Text> or <Quote Message>
 Convert text to audio.
 
-*${prefix}print* <Link>
-Take screenshot of the uploaded website and turn it into a PDF.
-
 *${prefix}translate* <En> + <Text> or <Quote message>
 Translates the text into different languages.
 
@@ -70,9 +61,6 @@ Reports the weather for the specified location.
 
 *${prefix}sl* <Link>
 Shorten the sent link.
-
-*${prefix}colorizer* <Image>
-Add color to grayscale images.
 
 *${prefix}scan* <Document> or <Link>
 Scan the file or website for viruses.
@@ -114,9 +102,6 @@ exports.es_ES = (pushname, prefix) => {
 *${prefix}tts* <Es> + <Texto> o <Marcar mensaje>
 Convierte texto a audio.
 
-*${prefix}print* <Link>
-Toma la captura de pantalla del sitio web cargado y conviértala en un PDF.
-
 *${prefix}traduzir* <Es> + <Texto> o <Marcar mensaje>
 Traduce texto a varios idiomas.
 
@@ -125,9 +110,6 @@ Informa el clima para la ubicación especificada.
 
 *${prefix}sl* <Link>
 Acortar el enlace enviado.
-
-*${prefix}colorizer* <Imagem>
-Añadir Color en imágenes en blanco y negro.
 
 *${prefix}scan* <Documento> o <Link>
 Escanee el archivo o el sitio web en busca de virus.

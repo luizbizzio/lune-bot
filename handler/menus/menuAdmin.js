@@ -7,9 +7,6 @@ Adiciona participantes ao grupo.
 *${prefix}ban* <@user> ou <Mencionar mensagem>
 Remove o participante do grupo.
 
-*${prefix}softban* <Marcar mensagem> + <Tempo em minutos>
-Remove temporariamente o participante do grupo.
-
 *${prefix}promote* <@user>
 Promove o participante do grupo
 
@@ -70,9 +67,6 @@ Adds participants to the group.
 *${prefix}ban* <@user> or <Mention message>
 Removes members from the group.
 
-*${prefix}softban* <Mark message> + <Time in minutes>
-Temporarily removes member from the group.
-
 *${prefix}promote* <@user>
 Promote group member
 
@@ -132,9 +126,6 @@ Agrega participantes al grupo.
 
 *${prefix}ban* <@usuario> o <mensaje de mención>
 Elimina al miembro del grupo.
-
-*${prefix}softban* <Marcar mensaje> + <Tiempo en minutos>
-Elimina temporalmente al miembro del grupo.
 
 *${prefix}promote* <@usuario>
 Promocionar miembro del grupo

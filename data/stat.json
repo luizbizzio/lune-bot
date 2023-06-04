@@ -1,0 +1,42 @@
+{
+	"sent": {
+		"chat": 0,
+		"gp2": 0,
+		"sticker": 0,
+		"image": 0,
+		"ptt": 0,
+		"e2e_notification": 0,
+		"notification_template": 0,
+		"document": 0,
+		"vcard": 0,
+		"audio": 0,
+		"video": 0,
+		"product": 0,
+		"groups_v4_invite": 0,
+		"template": 0,
+		"buttons_response": 0
+	},
+	"receive": {
+		"chat": 0,
+		"ptt": 0,
+		"image": 0,
+		"video": 0,
+		"sticker": 0,
+		"ciphertext": 0,
+		"audio": 0,
+		"product": 0,
+		"oversized": 0,
+		"document": 0,
+		"groups_v4_invite": 0,
+		"vcard": 0,
+		"location": 0,
+		"multi_vcard": 0,
+		"call_log": 0,
+		"payment": 0,
+		"gp2": 0,
+		"e2e_notification": 0,
+		"poll_creation": 0,
+		"notification_template": 0,
+		"list": 0
+	}
+}

@@ -16,9 +16,6 @@ Gera um avatar aleatório. (versão 1)
 *${prefix}avatargen2* <Seed>
 Gera um avatar aleatório. (versão 2)
 
-*${prefix}imggen* <Prompt>
-Usa uma I.A para gerar uma imagem.
-
 *${prefix}facegen*
 Usa uma I.A para gerar um rosto não existente.
 
@@ -83,9 +80,6 @@ Figurinhas de gatos aleatórios.
 *${prefix}dog*
 Figurinhas de cachorros aleatórios.
 
-*${prefix}random*
-Figurinhas aleatórias.
-
 *${prefix}hug* <@user>
 Dê um abraço em alguém.
 
@@ -128,9 +122,6 @@ Generate a random avatar. (version 1)
 
 *${prefix}avatargen2* <Seed>
 Generate a random avatar. (version 2)
-
-*${prefix}imggen* <Prompt>
-Use an A.I to generate an image.
 
 *${prefix}facegen*
 Use an A.I to generate a non-existent face.
@@ -196,9 +187,6 @@ Random cat stickers.
 *${prefix}dog*
 Random dog stickers.
 
-*${prefix}random*
-Random stickers.
-
 *${prefix}hug* <@user>
 Hug someone.
 
@@ -241,9 +229,6 @@ Genera un avatar aleatorio. (versión 1)
 
 *${prefix}avatargen2* <Seed>
 Genera un avatar aleatorio. (versión 2)
-
-*${prefix}imggen* <Prompt>
-Utiliza una I.A para generar una imagen.
 
 *${prefix}facegen*
 Utiliza una I.A para generar una cara inexistente.
@@ -308,9 +293,6 @@ Stickers de gatos aleatórios.
 
 *${prefix}dog*
 Stickers de cachorros aleatórios.
-
-*${prefix}random*
-Stickers aleatórias.
 
 *${prefix}hug* <@user>
 Dale un abrazo a alguien.
