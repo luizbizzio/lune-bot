@@ -8,7 +8,7 @@
   "homepage": "https://github.com/luizbizzio/lune-bot",
   "scripts": {
     "preinstall": "npm i -g pm2 nodemon && pip install get-stick-bugged-lol rembg",
-    "start": "pm2 start process.json --name lune-lot && pm2 monit",
+    "start": "pm2 start process.json --name lune-bot && pm2 monit",
     "stop": "pm2 stop lune-bot"
   },
   "repository": {
