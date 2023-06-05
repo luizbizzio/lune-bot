@@ -10,9 +10,11 @@
     "lib": "lib"
   },
   "scripts": {
-    "preinstall": "npm i -g pm2 nodemon fluent-ffmpeg && pip install get-stick-bugged-lol rembg",
-    "start": "pm2 kill && pm2 start process.json && pm2 monit",
-    "stop": "pm2 kill"
+    "preinstall": "pip install get-stick-bugged-lol rembg",
+    "start": "pm2 start process.json --name lune-lot && pm2 monit && pm2 stop lune-bot",
+    "stop": "pm2 stop lune-bot",
+    "kill": "pm2 kill",
+    "resume": "pm2 start lune-bot"
   },
   "repository": {
     "type": "git",
@@ -44,7 +46,9 @@
     "moment-timezone": "^0.5.43",
     "node-fetch": "^2.6.11",
     "node-gtts": "^2.0.2",
+    "nodemon": "^2.0.22",
     "parse-ms": "^2.1.0",
+    "pm2": "^5.3.0",
     "qrcode": "^1.5.3",
     "qrcode-reader": "^1.0.4",
     "quick.db": "^7.1.3",
