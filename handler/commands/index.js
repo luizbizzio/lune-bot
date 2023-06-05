@@ -13,6 +13,7 @@ const canvas = require('canvacord');
 const JsBarcode = require('jsbarcode');
 const QRCode = require('qrcode')
 const QrCodeRead = require('qrcode-reader');
+const { getLyrics } = require('genius-lyrics-api');
 const Jimp = require("jimp");
 const ffmpeg = require('fluent-ffmpeg');
 const DownloadYTFile = require('yt-dl-playlist');
@@ -2103,8 +2104,6 @@ const main = async (client, message) => {
                 if (args.length == 0) return client.reply(from, mess[lang].wrongUse.addMusicName(prefix+command), id);
                 if (body.slice(prefix.length+command.length+1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
                 try {
-                    const { getLyrics } = require('genius-lyrics-api');
-
                     const options = {
                         apiKey: config.api_keys.genius_lyrics,
                         title: body.slice(prefix.length+command.length+1),
