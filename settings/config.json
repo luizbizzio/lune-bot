@@ -3,7 +3,7 @@
 	"owners": [""],
 	"defaultPrefix": "#",
 	"executablePath": "/usr/bin/google-chrome-stable",
-	"antispam": true,
+	"antispam": false,
 	"spam_limit": 5,
 	"spam_delay": 2000,
 	"block_delay": 20000,
