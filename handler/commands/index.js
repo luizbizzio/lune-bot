@@ -242,8 +242,8 @@ const main = async (client, message) => {
         }
 
         // Check commands [ANTISPAM]
-        if (isCmd && !isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${db.get(`spam.${from.replace("@c.us", "")}`)}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
-        if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${db.get(`spam.${from.replace("@c.us", "")}`)}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
+        if (isCmd && !isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`))+1 || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
+        if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`))+1 || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
 
         // Command PV
         if (isCmd && !isBanned && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
