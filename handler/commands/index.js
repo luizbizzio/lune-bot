@@ -1,8 +1,8 @@
-// Inirialization
-require('dotenv').config();
+// Initialization
 const { decryptMedia } = require('@open-wa/wa-automate');
 const moment = require('moment-timezone');
 moment.tz.setDefault('America/Sao_paulo').locale('pt');
+require('node-gtts');
 
 // MODULES
 const fs = require('fs-extra');
@@ -84,27 +84,30 @@ var prefix, lang;
 
 const main = async (client, message) => {
     try {
-        const { type, id, from, t, sender, isGroupMsg, chat, caption, isMedia, isGif, mimetype, quotedMsg, quotedMsgObj, author, mentionedJidList, chatId } = message;
+        const { type, id, from, t, sender, isGroupMsg, chat, caption, isMedia, isGif, mimetype, quotedMsg, quotedMsgObj, author, mentionedJidList } = message;
 
         var { body } = message;
         const { name, formattedTitle } = chat;
-        var { pushname, verifiedName, formattedName } = sender;
-        pushname = pushname || verifiedName || formattedName // verifiedName is the name of someone who uses a business account
+        try {
+            var { pushname, verifiedName, formattedName } = sender;
+            pushname = pushname || verifiedName || formattedName // verifiedName is the name of someone who uses a business account
+        } catch {};
         const chats = (type === 'chat') ? body : ((type === 'image' || type === 'video')) ? caption : '';
         const botNumber = await client.getHostNumber() + '@c.us';
         //const isBot = quotedMsgId.includes(botNumber);
         const groupId = isGroupMsg ? chat.groupMetadata.id : '';
+        const user = sender.id;
         const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : '';
-        const isGroupAdmins = groupAdmins.includes(sender.id) || false;
+        const isGroupAdmins = groupAdmins.includes(user) || false;
         const isBotGroupAdmins = groupAdmins.includes(botNumber) || false;
-        const isBanned = ban.includes(sender.id);
+        const isBanned = ban.includes(user);
 
         const enableFilter = config.antispam;
         
         var isowner = false;
         var owners = config.owners;
         for (let i = 0; i < owners.length; i++) {
-            if (owners[i]+'@c.us' == sender.id) {
+            if (owners[i]+'@c.us' == user) {
                 isowner = true;
             };
         };
@@ -113,7 +116,7 @@ const main = async (client, message) => {
         const isxp = xp.includes(groupId)
 
         // Bot Prefix
-        var oqid = groupId || sender.id;
+        var oqid = groupId || user;
         prefix = db.get(`prefix.${oqid}`) || config.defaultPrefix;
         if (!db.get(`prefix.${oqid}`)) { db.set(`prefix.${oqid}`, config.defaultPrefix) };
         
@@ -129,7 +132,6 @@ const main = async (client, message) => {
         const isQuotedGif = quotedMsg && quotedMsg.mimetype === 'image/gif'
         const isQuotedMsg = quotedMsg
         const uaOverride = process.env.UserAgent
-        const user = sender.id
         const rankeed = ranke.includes(user)
         const isAntiLink = isGroupMsg ? atlk.includes(groupId) : false
         const autoSticker = atstk.includes(oqid)
@@ -228,8 +230,8 @@ const main = async (client, message) => {
             const mediaData = await decryptMedia(message, uaOverride)
             const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
             await client.sendImageAsSticker(from, imageBase64, mess[lang].stickerMetadataImg(true))
-            if (!isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent a', color('image', 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue'))
-            if (isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent a', color('image', 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue'))
+            if (!isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent an', color('image', 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue'))
+            if (isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent an', color('image', 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue'))
         }
 
         // Auto-Stk Video
@@ -237,8 +239,8 @@ const main = async (client, message) => {
     	    const mediaData = await decryptMedia(message, uaOverride)
         	const videoBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
 	        await client.sendMp4AsSticker(from, videoBase64, null, mess[lang].stickerMetadataVideo(10, '00:00:05.0', true, true), id)
-            if (!isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent a', color('video', 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue'))
-            if (isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent a', color('video', 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue')) 
+            if (!isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent an', color('video', 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue'))
+            if (isGroupMsg) console.log(color('[AUTOSTK]', 'blue'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent an', color('video', 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'blue')) 
         }
 
         // Check commands [ANTISPAM]
@@ -752,7 +754,7 @@ const main = async (client, message) => {
                     .setDiscriminator(user.substring(6, 10))
                     ranq.build()
                     .then(async (c) => {
-                        var base64 = new Buffer(c).toString('base64');
+                        var base64 = new Buffer.from(c).toString('base64');
                         var b64b = "data:image/png;base64," + base64;
                         await client.sendImage(from, b64b, `${user}_card.png`, `XP: ${userXp} / ${requiredXp}` , id)
                     })
@@ -1155,7 +1157,7 @@ const main = async (client, message) => {
             case 'makegirlsmoe':
             case 'moe':
                 client.simulateTyping(from, true);
-                var puppeteeroptions = { headless: true };
+                var puppeteeroptions = { headless: "new" };
                 if (!config.isWindows) {
                     puppeteeroptions.executablePath = config.executablePath;
                 }
@@ -1310,49 +1312,7 @@ const main = async (client, message) => {
                 client.simulateTyping(from, true)
                 await client.reply(from, mess[lang].fofo.resp(Math.floor(Math.random() * 101)), id);
             break
-
-            case 'anime':
-                client.simulateTyping(from, true);
-                if (args.length == 0) return await client.reply(from, mess[lang].anime.wrongUse(prefix+command), id);
-                if (body.slice(prefix.length+command.length+1).length > 50) return client.reply(from, mess[lang].maxText(50), id);
-                try {
-                    const getAnime = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(body.slice(prefix.length+command.length+1))}&limit=1`);
-                    if (getAnime.data.data.status == 404 || getAnime.data.data[0] == '') return client.reply(from, mess[lang].anime.noResults(), id);
-                    if (getAnime.data.data.status == 503 || getAnime.data.data[0] == '') return client.reply(from, mess[lang].somethingWentWrong(), id);
-                    if (getAnime.data.data.length == 0) return client.reply(from, mess[lang].anime.noResults(), id);
-                    getAnime.data.data[0].synopsis = await translate(getAnime.data.data[0].synopsis, mess[lang].lang()).catch(() => { return false; }) || false;
-                    getAnime.data.data[0].status   = await translate(getAnime.data.data[0].status, mess[lang].lang()).catch(() => { return false; }) || false;
-                    getAnime.data.data[0].duration = await translate(getAnime.data.data[0].duration, mess[lang].lang()).catch(() => { return '?'; }) || '?';
-                    getAnime.data.data[0].rating   = await translate(getAnime.data.data[0].rating, mess[lang].lang()).catch(() => { return '?'; }) || '?';
-                    getAnime.data.data[0].score    = typeof(getAnime.data.data[0].score) !== 'number' ? '?' : getAnime.data.data[0].score;
-
-                    await client.sendFileFromUrl(from, getAnime.data.data[0].images.jpg.image_url, 'anime.jpg', mess[lang].anime.resp(getAnime.data.data[0]), id);
-                } catch (err) {
-                    console.log(err);
-                    client.reply(from, mess[lang].somethingWentWrong(), id);
-                };
-            break;
-
-            case 'manga':
-            case 'mangá':
-                client.simulateTyping(from, true)
-                if (args.length == 0) return await client.reply(from, mess[lang].manga.wrongUse(prefix+command), id);
-                if (body.slice(prefix.length+command.length+1).length > 50) return client.reply(from, mess[lang].maxText(50), id);
-                try {
-                    const getManga = await axios.get(`https://api.jikan.moe/v4/manga?q=${encodeURIComponent(body.slice(prefix.length+command.length+1))}&limit=1`);
-                    if (getManga.data.data.status == 404 || getManga.data.data[0] == '') return client.reply(from, mess[lang].manga.noResults(), id);
-                    if (getManga.data.data.status == 503 || getManga.data.data[0] == '') return client.reply(from, mess[lang].somethingWentWrong(), id);
-                    if (getManga.data.data.length == 0) return client.reply(from, mess[lang].manga.noResults(), id);
-                    getManga.data.data[0].synopsis = await translate(getManga.data.data[0].synopsis, mess[lang].lang()).catch(() => { return false; }) || false;
-                    getManga.data.data[0].status = await translate(getManga.data.data[0].status, mess[lang].lang()).catch(() => { return false; }) || false;
-                    
-                    await client.sendFileFromUrl(from, getManga.data.data[0].images.jpg.image_url, 'manga.jpg', mess[lang].manga.resp(getManga.data.data[0]), id);
-                } catch (e) {
-                    console.log(e);
-                    client.reply(from, mess[lang].somethingWentWrong(), id);
-                };
-            break;
-
+            
             case 'reverse':
                 client.simulateTyping(from, true)
                 var msgInv = isQuotedMsg ? (quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : '') : body.slice(prefix.length+command.length+1);
@@ -2013,7 +1973,7 @@ const main = async (client, message) => {
                                 dark: true
                             })
                                 .then(async(c) => {
-                                    var base64b = new Buffer(c).toString("base64");
+                                    var base64b = new Buffer.from(c).toString("base64");
                                     var b64b = "data:image/png;base64," + base64b;
                                     await client.sendFile(from, b64b, 'image.png', '', id);
                                 });
@@ -2156,7 +2116,8 @@ const main = async (client, message) => {
                         .then((lyrics) => {
                             client.reply(from, lyrics, id);
                         });
-                } catch {
+                } catch (e) {
+                    console.log(e);
                     await client.reply(from, mess[lang].lyrics.noLyrics(), id)
                 }
             break
@@ -2709,7 +2670,7 @@ const main = async (client, message) => {
                 if (body.slice(prefix.length+command.length+1).length > 1500) return client.reply(from, mess[lang].maxText(1500), id);
                 await canvas.Canvas.changemymind(body.slice(prefix.length+command.length+1))
                     .then(async(c) => {
-                        var base64b = new Buffer(c).toString("base64");
+                        var base64b = new Buffer.from(c).toString("base64");
                         var b64b = "data:image/png;base64," + base64b;
                         await client.sendFile(from, b64b, 'cmm.png', '', id);
                     })
@@ -2959,7 +2920,7 @@ const main = async (client, message) => {
                     const wstddt = await decryptMedia(wastedmd, uaOverride)
                     await canvas.Canvas.wasted(wstddt)
                         .then(async(c) => {
-                            var base64b = new Buffer(c).toString("base64");
+                            var base64b = new Buffer.from(c).toString("base64");
                             var b64b = "data:image/png;base64," + base64b;
                             await client.sendFile(from, b64b, 'image.png', '', id);
                         });

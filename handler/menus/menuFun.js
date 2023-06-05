@@ -59,12 +59,6 @@ Lança um dado de 1 a 6.
 *${prefix}flip*
 Joga cara ou coroa.
 
-*${prefix}anime* <Nome do anime>
-Mostra as informações do anime pesquisado.
-
-*${prefix}manga* <Nome do mangá>
-Mostra as informações do mangá pesquisado.
-
 *${prefix}pokedex* <Pokémon>
 Mostra todas as informações do pokémon especificado.
 
@@ -166,12 +160,6 @@ Throw a dice.
 *${prefix}flip*
 Play heads or tails.
 
-*${prefix}anime* <Anime Name>
-Shows the information of the searched anime.
-
-*${prefix}manga* <Manga Name>
-Shows the information of the searched manga.
-
 *${prefix}pokedex* <Pokemon>
 Shows all information for the specified pokemon.
 
@@ -272,12 +260,6 @@ Lanza un dado del 1 al 6.
 
 *${prefix}flip*
 Juega cara o cruz.
-
-*${prefix}anime* <Nombre do anime>
-Muestra la información del anime buscado.
-
-*${prefix}manga* <Nombre do mangá>
-Muestra la información del manga buscado.
 
 *${prefix}pokedex* <Pokémon>
 Muestra toda la información del pokémon especificado.

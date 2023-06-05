@@ -1,5 +1,3 @@
-const { addCodeArg } = require("ajv/dist/compile/codegen/code")
-
 exports.pt_BR = (pushname, prefix) => {
 	return `🎇 [ *MENU STICKER* ] 🎇
 

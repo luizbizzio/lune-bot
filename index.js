@@ -167,7 +167,7 @@ const start = (client) => {
 const options = {
   sessionId: 'session',
 	multiDevice: true,
-  headless: true,
+  headless: "new",
   qrTimeout: 0,
   authTimeout: 30,
 	killProcessOnTimeout: true,
