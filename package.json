@@ -6,13 +6,10 @@
   "author": "Luiz Bizzio/Enzo Santos",
   "license": "GPL-3.0",
   "homepage": "https://github.com/luizbizzio/lune-bot",
-  "directories": {
-    "lib": "lib"
-  },
   "scripts": {
     "preinstall": "npm i -g pm2 nodemon && pip install get-stick-bugged-lol rembg",
-    "start": "pm2 kill && pm2 start process.json && pm2 monit",
-    "stop": "pm2 kill"
+    "start": "pm2 start process.json --name lune-lot && pm2 monit",
+    "stop": "pm2 stop lune-bot"
   },
   "repository": {
     "type": "git",
@@ -37,6 +34,7 @@
     "file-type": "^16.5.4",
     "fluent-ffmpeg": "^2.1.2",
     "format-duration-time": "^1.5.4",
+    "genius-lyrics-api": "^3.2.0",
     "got": "^11.8.6",
     "imgbb-uploader": "^1.5.1",
     "jimp": "^0.22.8",
