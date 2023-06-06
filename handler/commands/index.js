@@ -1623,6 +1623,7 @@ const main = async (client, message) => {
                             }
                         };
                 } catch (err) {
+                    console.log(err);
                     return client.reply(from, mess[lang].somethingWentWrong(), id);
                 };
             break
