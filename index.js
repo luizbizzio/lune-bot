@@ -14,11 +14,16 @@ const { mess } = require('./lib');
 const config = require('./settings/config.json');
 var welkom;
 
+const { checkOs, isOs, threatOsName } = require('./lib/checkos')
+
+const currentOs = threatOsName();
+
 const start = (client) => {
 	figlet(startText, function(err, data) { 
 		if (err) { return }
 		console.log(data)
 		console.log(color('[STARTED]'), color(time))
+		console.log(color('[INFO]'), `You are currently running Lune Bot on a "${currentOs}".`)
 	});
 
 	client.setPresence(true);
@@ -186,7 +191,7 @@ const options = {
 	skipUpdateCheck: true,
 };
 
-if (!config.isWindows) {
+if (isOs('linux')) {
 	options.executablePath = config.executablePath;
 }
 

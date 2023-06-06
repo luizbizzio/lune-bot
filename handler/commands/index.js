@@ -1,5 +1,6 @@
 // Initialization
 const { decryptMedia } = require('@open-wa/wa-automate');
+const { isOs } = require('../../lib/checkos');
 const moment = require('moment-timezone');
 moment.tz.setDefault('America/Sao_paulo').locale('pt');
 require('node-gtts');
@@ -27,10 +28,10 @@ const db = require('quick.db');
 const config = require('../../settings/config.json');
 
 var ffmpegPath;
-if (config.isWindows) {
+if (isOs('win32')) {
     ffmpegPath = './ffmpeg/bin/ffmpeg.exe'; // Windows
 } else {
-    ffmpegPath = '/usr/bin/ffmpeg'; // Linux
+    ffmpegPath = '/usr/bin/ffmpeg'; // Linux and others
 };
 const downloaderYt = new DownloadYTFile({
   outputPath: './media/musics',
@@ -1159,7 +1160,7 @@ const main = async (client, message) => {
             case 'moe':
                 client.simulateTyping(from, true);
                 var puppeteeroptions = { headless: "new" };
-                if (!config.isWindows) {
+                if (!isOs('win32')) {
                     puppeteeroptions.executablePath = config.executablePath;
                 }
                 var browser = await require('puppeteer').launch(puppeteeroptions);
