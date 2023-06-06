@@ -1723,15 +1723,31 @@ const main = async (client, message) => {
                     return client.reply(from, mess[lang].play.noVideoFound(), id);
                 }
                 let { videoId, title, duration } = videos[0];
-                if (duration.seconds >= 1200) {
-                    return client.reply(from, mess[lang].maxDuration('20', 'm', 'vid'), id);
-                }
                 var musicmMs = duration.seconds * 1000;
                 var playTimerMs = ms(musicmMs);
-                client.reply(from, mess[lang].play.resp(title, ((playTimerMs.minutes < 10) ? "0"+playTimerMs.minutes.toString() : playTimerMs.minutes)+':'+((playTimerMs.seconds < 10) ? "0"+playTimerMs.seconds.toString() : playTimerMs.seconds)), id);
-                
+                var formatedTimeP = (
+                    (playTimerMs.hours && playTimerMs.hours > 0 ? (
+                        playTimerMs.hours < 10 ?
+                        "0"+playTimerMs.hours.toString()+":" :
+                        playTimerMs.hours+":") : '')
+                    +
+                    (
+                        playTimerMs.minutes < 10 ?
+                        "0"+playTimerMs.minutes.toString()+":" :
+                        playTimerMs.minutes+":")
+                    +
+                    (
+                        playTimerMs.seconds < 10 ?
+                        "0"+playTimerMs.seconds.toString() :
+                        playTimerMs.seconds)
+                );
 
-                fs.stat(`./media/musics/${videoId}.mp3`, async function(err, stat) {
+                if (duration.seconds >= 1800) {
+                    return client.reply(from, mess[lang].maxDuration('30', 'm', 'vid', title, formatedTimeP), id);
+                }
+                client.reply(from, mess[lang].play.resp(title, formatedTimeP), id);
+
+                fs.stat(`./media/musics/${videoId}.mp3`, async function(err) {
                     if (err == null) {
                         client.sendFile(from, `./media/musics/${videoId}.mp3`, `${videoId}.mp3`, '', id);
                     } else {
@@ -1755,12 +1771,29 @@ const main = async (client, message) => {
                     };
                     let { videos } = await yts(searchOptions);
                     let { videoId, title, duration } = videos[0];
+                    var musicmMs = duration.seconds * 1000;
+                    var playTimerMs = ms(musicmMs);
+                    var formatedTimeP = (
+                        (playTimerMs.hours && playTimerMs.hours > 0 ? (
+                            playTimerMs.hours < 10 ?
+                            "0"+playTimerMs.hours.toString()+":" :
+                            playTimerMs.hours+":") : '')
+                        +
+                        (
+                            playTimerMs.minutes < 10 ?
+                            "0"+playTimerMs.minutes.toString()+":" :
+                            playTimerMs.minutes+":")
+                        +
+                        (
+                            playTimerMs.seconds < 10 ?
+                            "0"+playTimerMs.seconds.toString() :
+                            playTimerMs.seconds)
+                    );
+
                     if (duration.seconds >= 660) {
-                        return client.reply(from, mess[lang].maxDuration('10', 'm', 'vid'), id);
+                        return client.reply(from, mess[lang].maxDuration('10', 'm', 'vid', title, formatedTimeP), id);
                     };
-                    var videoMs = duration.seconds * 1000;
-                    var videoTimerMs = ms(videoMs);
-                    client.reply(from, mess[lang].video.resp(title, ((videoTimerMs.minutes < 10) ? "0"+videoTimerMs.minutes.toString() : videoTimerMs.minutes)+':'+((videoTimerMs.seconds < 10) ? "0"+videoTimerMs.seconds.toString() : videoTimerMs.seconds)), id);
+                    client.reply(from, mess[lang].video.resp(title, formatedTimeP), id);
                     
                     var stream = await ytdl("https://www.youtube.com/watch?v="+videoId, {
                         quality: '18'
