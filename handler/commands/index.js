@@ -1075,9 +1075,8 @@ const main = async (client, message) => {
                 if (!query || args.length < 1 || !args) return client.reply(from, mess[lang].wrongUse.andSearch(prefix+command), id);
                 if (body.slice(prefix.length+command.length+1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
                 var imageF = await imageFromGoogle.get(query);
-                if (imageF.includes("Nenhum resultado encontra")) return client.reply(from, mess[lang].noResultFound(), id);
+                if (imageF.includes("No results found")) return client.reply(from, mess[lang].noResultFound(), id);
                 await client.sendImageAsSticker(from, imageF, mess[lang].stickerMetadataImg(true));
-                // fs.unlinkSync(imageF);
             break
 
             case 'mixemoji':
