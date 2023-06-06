@@ -1602,9 +1602,11 @@ const main = async (client, message) => {
                         var caminhoAudio = null, caminhoVideo = null
                         var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
+                        var pathBase = './media/';
+
                         if (dadosMensagem.mimetype == "video/mp4") {
                             var tomp3filename = Math.floor(Math.random() * 1000000);
-                            caminhoVideo = `./media/videos/${tomp3filename}.mp4`;
+                            caminhoVideo = pathBase+tomp3filename+'.mp4';
                             fs.writeFileSync(caminhoVideo, mediaData, "base64")
                             try {
                                 caminhoAudio = await conversao.converterMp4ParaMp3(caminhoVideo)
@@ -1678,13 +1680,14 @@ const main = async (client, message) => {
                     var efeitosSuportados = [
                         'explode', '2x', 'reverse', 'bass', 'acute', 'volume', 'nightcore', 'lo-fi', 'bathroom', 'slow',
                     ], tipoEfeito = body.slice(prefix.length+command.length+1).trim()
+                    var pathAudios = './media/';
                     if (!efeitosSuportados.includes(tipoEfeito)) return client.reply(from, mess[lang].invalidOptions(['explode', '2x', 'reverse', 'bass', 'acute', 'volume', 'nightcore', 'lo-fi', 'bathroom', 'slow']), id)
                     if (msgMedia.type === "ptt" || msgMedia.type === "audio"){
                         var mediaData = await decryptMedia(msgMedia, uaOverride)
-                        var audioOriginal = `./media/audios/${randomNameAudio}`;
+                        var audioOriginal = pathAudios+randomNameAudio;
                         fs.writeFileSync(audioOriginal, mediaData, "base64")
                         try {
-                            var audioEditado = await api.obterAudioModificado(`./media/audios/${randomNameAudio}`, tipoEfeito)
+                            var audioEditado = await api.obterAudioModificado(pathAudios+randomNameAudio, tipoEfeito)
                                 .catch((e) => {
                                     return client.reply(from, mess[lang].somethingWentWrong(), id);
                                 })
@@ -1798,12 +1801,14 @@ const main = async (client, message) => {
                     var stream = await ytdl("https://www.youtube.com/watch?v="+videoId, {
                         quality: '18'
                     });
+
+                    var pathBase = './media/'
                     
-                    var file = fs.createWriteStream(`./media/videos/${videoId}.mp4`);
+                    var file = fs.createWriteStream(pathBase+videoId+'.mp4');
                     stream.pipe(file);
                     file.on('finish', async() => {
-                        await client.sendFile(from, `./media/videos/${videoId}.mp4`, `${videoId}.mp4`, '', id);
-                        fs.unlinkSync(`./media/videos/${videoId}.mp4`);
+                        await client.sendFile(from, pathBase+videoId+'.mp4', `${videoId}.mp4`, '', id);
+                        fs.unlinkSync(pathBase+videoId+'.mp4');
                     });
                 } catch (err) {
                     console.log(err);
@@ -1935,9 +1940,10 @@ const main = async (client, message) => {
                 var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
                 var caminhoAudio, caminhoVideo;
+                var pathBase = './media/';
 
                 if (dadosMensagem.mimetype == "video/mp4") {
-                    caminhoVideo = `./media/videos/${randomNameVideoMi}`;
+                    caminhoVideo = pathBase+randomNameVideoMi;
                     fs.writeFileSync(caminhoVideo, mediaData, "base64");
                     try {
                         caminhoAudio = await conversao.converterMp4ParaMp3(caminhoVideo);
@@ -1948,7 +1954,7 @@ const main = async (client, message) => {
                     };
                 };
                 if (dadosMensagem.type == "audio" || dadosMensagem.type == "ptt") {
-                    caminhoAudio = `./media/audios/${randomNameAudioMi}`;
+                    caminhoAudio = pathBase+randomNameAudioMi;
                     fs.writeFileSync(caminhoAudio, mediaData, "base64");
                 };
                 try {
