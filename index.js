@@ -14,7 +14,7 @@ const { mess } = require('./lib');
 const config = require('./settings/config.json');
 var welkom;
 
-const { checkOs, isOs, threatOsName } = require('./lib/checkos')
+const { isOs, threatOsName } = require('./lib/checkos')
 
 const currentOs = threatOsName();
 
@@ -191,9 +191,9 @@ const options = {
 	skipUpdateCheck: true,
 };
 
-if (isOs('linux')) {
+if (!isOs('win32')) {
 	options.executablePath = config.executablePath;
-}
+};
 
 function create() {
 	wa.create(options)
