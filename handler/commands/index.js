@@ -590,8 +590,12 @@ const main = async (client, message) => {
                 if (isGroupMsg) {
                     if (mentionedJidList.length == 1) {
                         var qmid = mentionedJidList[0];
+                        var tmtM = await marriage.getTimer(qmid);
+                        var marryTime = ms(Date.now() - tmtM);
                         var estadoCivil = await marriage.getCouple(mentionedJidList[0]) || mess[lang].marriage.alone();
-                        if (estadoCivil !== mess[lang].marriage.alone()) { var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", "")); };
+                        if (estadoCivil !== mess[lang].marriage.alone()) {
+                            var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", ""), marryTime.days);
+                        };
                         try {
                             var namae = rank.getInfo(qmid, nivel).nick;
                         } catch (err) {
@@ -622,8 +626,12 @@ const main = async (client, message) => {
                             });
                 } else if (quotedMsg) {
                     var qmid = quotedMsgObj.sender.id
+                    var tmtM = await marriage.getTimer(qmid);
+                    var marryTime = ms(Date.now() - tmtM);
                     var estadoCivil = await marriage.getCouple(quotedMsgObj.sender.id) || mess[lang].marriage.alone();
-                    if (estadoCivil !== mess[lang].marriage.alone()) { var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", "")); };
+                    if (estadoCivil !== mess[lang].marriage.alone()) {
+                        var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", ""), marryTime.days);
+                    };
                     var namae = quotedMsgObj.sender.pushname
                     if (qmid == botNumber) return client.simulateTyping(from, false); 
                     try {
@@ -649,8 +657,13 @@ const main = async (client, message) => {
                                 });
                         });
                 } else if (!quotedMsg) {
+                    var tmtM = await marriage.getTimer(sender.id);
+                    var marryTime = ms(Date.now() - tmtM);
                     var estadoCivil = await marriage.getCouple(sender.id) || mess[lang].marriage.alone();
-                    if (estadoCivil !== mess[lang].marriage.alone()) { var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", "")); };
+                    var coupleTime = marryTime || '0';
+                    if (estadoCivil !== mess[lang].marriage.alone()) {
+                        var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", ""), coupleTime.days);
+                    };
                     try {
                         var pic = await client.getProfilePicFromServer(author);
                     } catch (err) {
@@ -667,7 +680,7 @@ const main = async (client, message) => {
                     }
                     await client.sendFile(from, pfp, 'pfo.jpg', mess[lang].profile.resp(namae, adm, estadoCivil, rank.getLevel(user, nivel, pushname), rank.getXp(user, nivel, pushname), (5 * Math.pow(rank.getLevel(user, nivel, pushname), 2) + 50 * rank.getLevel(user, nivel, pushname) + 100), patente, isxp), id)
                         .catch((err) => {
-                            client.sendFile(from, './media/welcome/profile.png', 'profile.png', msgF, id)
+                            client.sendFile(from, './media/welcome/profile.png', 'profile.png', mess[lang].profile.resp(namae, adm, estadoCivil, rank.getLevel(user, nivel, pushname), rank.getXp(user, nivel, pushname), (5 * Math.pow(rank.getLevel(user, nivel, pushname), 2) + 50 * rank.getLevel(user, nivel, pushname) + 100), patente, isxp), id)
                                 .catch((err) => {
                                     console.log(err);
                                     client.reply(from, mess[lang].somethingWentWrong(), id);
@@ -1598,7 +1611,7 @@ const main = async (client, message) => {
                     client.simulateTyping(from, true)
                         var dadosMensagem = quotedMsg ? quotedMsg : message;
                         if (dadosMensagem.mimetype != "video/mp4") return client.reply(from, mess[lang].wrongUse.quotingVideo(prefix+command), id)
-                        if (dadosMensagem.duration > 600) return client.reply(from, mess[lang].maxDuration(10, 'm', 'vid'), id);
+                        if (dadosMensagem.duration > 3600) return client.reply(from, mess[lang].maxDuration(60, 'm', 'vid'), id);
                         var caminhoAudio = null, caminhoVideo = null
                         var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
@@ -1746,8 +1759,8 @@ const main = async (client, message) => {
                         playTimerMs.seconds)
                 );
 
-                if (duration.seconds >= 1800) {
-                    return client.reply(from, mess[lang].maxDuration('30', 'm', 'vid', title, formatedTimeP), id);
+                if (duration.seconds >= 2760) {
+                    return client.reply(from, mess[lang].maxDuration('45', 'm', 'vid', title, formatedTimeP), id);
                 }
                 client.reply(from, mess[lang].play.resp(title, formatedTimeP), id);
 
@@ -1936,7 +1949,7 @@ const main = async (client, message) => {
                 const randomNameAudioMi = `${Math.floor(Math.random() * 10000)}.mp3`;
                 const randomNameVideoMi = `${Math.floor(Math.random() * 10000)}.mp4`;
                 var dadosMensagem = quotedMsg ? quotedMsg : message;
-                if (dadosMensagem.duration > 35) return client.reply(from, mess[lang].maxDuration(32, 's', 'vid'), id);
+                if (dadosMensagem.duration > 420) return client.reply(from, mess[lang].maxDuration('7', 'm', 'vid'), id);
                 if (dadosMensagem.mimetype != "video/mp4" && dadosMensagem.type != "audio" && dadosMensagem.type != "ptt") return client.reply(from, mess[lang].wrongUse.quotingAudioOrVideo(prefix+command), id);
                 var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
