@@ -1,6 +1,7 @@
 {
 	"owners": [""],
 	"defaultPrefix": "#",
+	"save_musics": true,
 	"executablePath": "/usr/bin/google-chrome-stable",
 	"antispam": false,
 	"spam_limit": 5,
