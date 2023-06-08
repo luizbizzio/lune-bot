@@ -527,7 +527,7 @@ const main = async (client, message) => {
             case 'casino':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return await client.reply(from, mess[lang].xp.onlyGroupsWithXp(), id)
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id);
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id);
                 const checkxpc = rank.getXp(user, nivel, pushname)
                 if (checkxpc <= 500) return client.reply(from, mess[lang].games.tooLowXp(500, checkxpc), id)
                 if (args.length !== 1) return client.reply(from, mess[lang].games.specifyAmount(), id)
@@ -558,7 +558,7 @@ const main = async (client, message) => {
             case 'ruleta':
                     client.simulateTyping(from, true)
                     if (!isGroupMsg) return await client.reply(from, mess[lang].xp.onlyGroupsWithXp(), id)
-                    if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id);
+                    if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id);
                     const checkxpr = rank.getXp(user, nivel, pushname)
                     const doublerol = Math.floor(Math.random() * 3 ) + 1
                     if (checkxpr <= 2000) return client.reply(from, mess[lang].games.tooLowXp("2.000", checkxpr), id)
@@ -719,7 +719,7 @@ const main = async (client, message) => {
             case 'exitgame':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id)
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id)
                 if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                 if (args[0].toLowerCase() == 'off') {
                     if (xp.includes(user)) return client.reply(from, mess[lang].exitGame.alreadyOff(), id)
@@ -742,7 +742,7 @@ const main = async (client, message) => {
             case 'lvl':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id)
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id)
                 errorImg = fs.readFileSync("./media/welcome/profile.png");
                 const userLevel = rank.getLevel(user, nivel, pushname)
                 const userXp = rank.getXp(user, nivel, pushname)
@@ -785,7 +785,7 @@ const main = async (client, message) => {
             case 'tiers':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id);
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id)
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id)
                 var peoXptwo = rank.getXp(user, nivel, pushname)
                 var peoLeveltwo = rank.getLevel(user, nivel, pushname)
                 var ineedxptwo = 5 * Math.pow(peoLeveltwo, 2) + 50 * peoLeveltwo + 100
@@ -802,7 +802,7 @@ const main = async (client, message) => {
             case 'rankup':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id);
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id)
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id)
                 for (let i = 0; i < 200; i++) {
                     rank.wait(user);
                     if ((5 * Math.pow(rank.getLevel(user, nivel, pushname), 2) + 50 * rank.getLevel(user, nivel, pushname) + 100) + rank.getLevel(user, nivel, pushname) <= rank.getXp(user, nivel, pushname)) {
@@ -853,7 +853,7 @@ const main = async (client, message) => {
                 if (!isowner) return
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id);
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id);
                 if (args.length !== 2) return client.reply(from, mess[lang].wrongUse.axp(prefix+command), id)
                 if (isNaN(args[1])) return client.reply(from, mess[lang].onlyNum(), id)
                 if (mentionedJidList.length !== 0) {
@@ -870,7 +870,7 @@ const main = async (client, message) => {
             case 'give':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].xp.onlyGroupsWithXp(), id)
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id);
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id);
                 if (args.length < 2) return client.reply(from, mess[lang].wrongUse.addTagAndVal(), id)
                 var valuetogive = args[args.length-1];
                 if (isNaN(valuetogive)) return client.reply(from, mess[lang].onlyNum(), id)
@@ -899,7 +899,7 @@ const main = async (client, message) => {
             case 'xpstat':
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
-                if (!isxp) return await client.reply(from, mess[lang].xp.xpIsOff(), id);
+                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id);
                 const uzerlvl = rank.getLevel(user, nivel, pushname)
                 const theuzlvl = rank.getLevel(user, nivel, pushname)
                 const thexpnde = 5 * Math.pow(theuzlvl, 2) + 50 * theuzlvl + 100
@@ -1219,7 +1219,7 @@ const main = async (client, message) => {
             case 'removebg':
             case 'stknobg':
                 client.simulateTyping(from, true);
-                if (!isQuotedImage && message.type !== "image") return client.reply(from, mess[lang].wrongUse.quotingImageOrAsBody(prefix+command), id);
+                if (!isQuotedImage && message.type !== "image" && !isQuotedSticker) return client.reply(from, mess[lang].wrongUse.quotingImageOrAsBody(prefix+command), id);
                 var filename = Math.random().toString(36).substring(7);
                 
                 var qtlnobg = isQuotedMsg ? quotedMsg : message;
@@ -1382,7 +1382,6 @@ const main = async (client, message) => {
             case 'deathage':
             case 'anodemorte':
             case 'anomortal':
-                client.simulateTyping(from, true)
                 client.simulateTyping(from, true)
                 if (args.length == 0) return client.reply(from, mess[lang].wrongUse.andName(prefix+command), id)
                 const predea = await axios.get(`https://api.agify.io/?name=${args[0]}`)
@@ -1611,32 +1610,32 @@ const main = async (client, message) => {
             case 'tomp3':
                 try {
                     client.simulateTyping(from, true)
-                        var dadosMensagem = quotedMsg ? quotedMsg : message;
-                        if (dadosMensagem.mimetype != "video/mp4") return client.reply(from, mess[lang].wrongUse.quotingVideo(prefix+command), id)
-                        if (dadosMensagem.duration > 3600) return client.reply(from, mess[lang].maxDuration(60, 'm', 'vid'), id);
-                        var caminhoAudio = null, caminhoVideo = null
-                        var mediaData = await decryptMedia(dadosMensagem, uaOverride);
+                    var dadosMensagem = quotedMsg ? quotedMsg : message;
+                    if (dadosMensagem.mimetype != "video/mp4") return client.reply(from, mess[lang].wrongUse.quotingVideo(prefix+command), id)
+                    if (dadosMensagem.duration > 3600) return client.reply(from, mess[lang].maxDuration(60, 'm', 'vid'), id);
+                    var caminhoAudio = null, caminhoVideo = null
+                    var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
-                        var pathBase = './media/';
+                    var pathBase = './media/';
 
-                        if (dadosMensagem.mimetype == "video/mp4") {
-                            var tomp3filename = Math.floor(Math.random() * 1000000);
-                            caminhoVideo = pathBase+tomp3filename+'.mp4';
-                            fs.writeFileSync(caminhoVideo, mediaData, "base64")
-                            try {
-                                caminhoAudio = await conversao.converterMp4ParaMp3(caminhoVideo)
-                                fs.unlinkSync(caminhoVideo);
-                                
-                                client.sendFile(from, caminhoAudio, `${tomp3filename}.mp3`, ``, id).then(() => {
-                                    fs.unlinkSync(caminhoAudio);
-                                });
-                            } catch (err) {
-                                fs.unlinkSync(caminhoVideo);
+                    if (dadosMensagem.mimetype == "video/mp4") {
+                        var tomp3filename = Math.floor(Math.random() * 1000000);
+                        caminhoVideo = pathBase+tomp3filename+'.mp4';
+                        fs.writeFileSync(caminhoVideo, mediaData, "base64")
+                        try {
+                            caminhoAudio = await conversao.converterMp4ParaMp3(caminhoVideo)
+                            fs.unlinkSync(caminhoVideo);
+                            
+                            client.sendFile(from, caminhoAudio, `${tomp3filename}.mp3`, ``, id).then(() => {
                                 fs.unlinkSync(caminhoAudio);
-                                console.log(err)
-                                client.reply(from, mess[lang].somethingWentWrong(), id)
-                            }
-                        };
+                            });
+                        } catch (err) {
+                            fs.unlinkSync(caminhoVideo);
+                            fs.unlinkSync(caminhoAudio);
+                            console.log(err)
+                            client.reply(from, mess[lang].somethingWentWrong(), id)
+                        }
+                    };
                 } catch (err) {
                     console.log(err);
                     return client.reply(from, mess[lang].somethingWentWrong(), id);
@@ -2612,10 +2611,10 @@ const main = async (client, message) => {
                 if (!isBotGroupAdmins) return await client.reply(from, mess[lang].botIsntAdmin(), id)
                 if (args.length == 0) return client.reply(from, mess[lang].onOrOff(), id)
                 if (args[0].toLowerCase() == 'on') {
-                    client.setGroupToAdminsOnly(from, true)
+                    await client.setGroupToAdminsOnly(from, true)
                     await client.reply(from, mess[lang].onlyadmins.on(), id)
                 } else if (args[0].toLowerCase() == 'off') {
-                    client.setGroupToAdminsOnly(from, false)
+                    await client.setGroupToAdminsOnly(from, false)
                     await client.reply(from, mess[lang].onlyadmins.off(), id)
                 } else {
                     client.reply(from, mess[lang].onOrOff(), id)
