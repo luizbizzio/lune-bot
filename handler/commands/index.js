@@ -754,7 +754,8 @@ const main = async (client, message) => {
                 }
                 let colorlib = JSON.parse(fs.readFileSync('./data/colorlevel.json'));
                 let colorlv = colorlib[Math.floor(Math.random() * colorlib.length)]
-                const requiredXp = 5 * Math.pow(userLevel, 2) + 50 * userLevel + 100
+                const minXp = 5 * Math.pow(userLevel-1, 2) + 50 * (userLevel-1) + 100 + Math.floor((userLevel-1) * 2);
+                const requiredXp = 5 * Math.pow(userLevel, 2) + 50 * userLevel + 100 + Math.floor(userLevel * 2);
                 const ranq = new canvas.Rank()
                     .setAvatar(pepe)
                     .setLevel(userLevel)
@@ -762,11 +763,12 @@ const main = async (client, message) => {
                     .setRank(Number(rank.getRank(user, nivel, pushname)))
                     .setCurrentXP(userXp)
                     .setOverlay('#000000', 100, false)
+                    .setMinXP(minXp)
                     .setRequiredXP(requiredXp)
                     .setProgressBar(colorlv, 'COLOR')
                     .setBackground('COLOR', '#000000')
                     .setUsername(pushname)
-                    .setDiscriminator(user.substring(6, 10))
+                    .setDiscriminator(user.replace('@c.us', '').substring(user.replace('@c.us', '').length-4,user.replace('@c.us', '').length))
                     ranq.build()
                     .then(async (c) => {
                         var base64 = new Buffer.from(c).toString('base64');
@@ -1764,13 +1766,18 @@ const main = async (client, message) => {
                 }
                 client.reply(from, mess[lang].play.resp(title, formatedTimeP), id);
 
-                fs.stat(`./media/musics/${videoId}.mp3`, async function(err) {
+                var pathPlay = `./media/musics/${videoId}`;
+                fs.stat(`${pathPlay}.mp3`, async function(err) {
                     if (err == null) {
-                        client.sendFile(from, `./media/musics/${videoId}.mp3`, `${videoId}.mp3`, '', id);
+                        client.sendFile(from, `${pathPlay}.mp3`, `${videoId}.mp3`, '', id);
                     } else {
                         await downloaderYt.download(videoId, `${videoId}.mp3`);
 
-                        client.sendFile(from, `./media/musics/${videoId}.mp3`, `${videoId}.mp3`, '', id);
+                        client.sendFile(from, `${pathPlay}.mp3`, `${videoId}.mp3`, '', id);
+
+                        if (!config.save_musics) {
+                            fs.unlinkSync(`${pathPlay}.mp3`);
+                        };
                     };
                 });
             break;
@@ -1822,7 +1829,7 @@ const main = async (client, message) => {
                     stream.pipe(file);
                     file.on('finish', async() => {
                         await client.sendFile(from, pathBase+videoId+'.mp4', `${videoId}.mp4`, '', id);
-                        fs.unlinkSync(pathBase+videoId+'.mp4');
+                        fs.unlinkSync(`${pathBase}${videoId}.mp4`);
                     });
                 } catch (err) {
                     console.log(err);
@@ -2011,29 +2018,29 @@ const main = async (client, message) => {
 
             case 'comment':
                 client.simulateTyping(from, true)
-                        if (args.length == 0) return client.reply(from, mess[lang].comment.wrongUse(prefix+command), id)
-                    if (args.length < 2) return client.reply(from, mess[lang].comment.wrongUse(prefix+command), id)
-                    if (!body.slice('9').includes('|')) return client.reply(from, mess[lang].comment.wrongUse(prefix+command), id)
-                    if (body.slice(prefix.length+command.length+1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    if (isMedia && type === 'image' || isQuotedImage && args.length >= 2) {
-                            const top = arg.split('|')[0]
-                            const bottom = arg.split('|')[1]
-                            const encryptMedia = isQuotedImage ? quotedMsg : message
-                            const mediaData = await decryptMedia(encryptMedia, uaOverride)
-                            await canvas.Canvas.youtube({
-                                username: top,
-                                avatar: mediaData,
-                                content: bottom,
-                                dark: true
-                            })
-                                .then(async(c) => {
-                                    var base64b = new Buffer.from(c).toString("base64");
-                                    var b64b = "data:image/png;base64," + base64b;
-                                    await client.sendFile(from, b64b, 'image.png', '', id);
-                                });
-                    } else {
-                        await client.reply(from, mess[lang].wrongUse.twoWords(prefix+command), id)
-                    }
+                if (args.length == 0) return client.reply(from, mess[lang].comment.wrongUse(prefix+command), id)
+                if (args.length < 2) return client.reply(from, mess[lang].comment.wrongUse(prefix+command), id)
+                if (!body.slice('9').includes('|')) return client.reply(from, mess[lang].comment.wrongUse(prefix+command), id)
+                if (body.slice(prefix.length+command.length+1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
+                if (isMedia && type === 'image' || isQuotedImage && args.length >= 2) {
+                        const top = arg.split('|')[0]
+                        const bottom = arg.split('|')[1]
+                        const encryptMedia = isQuotedImage ? quotedMsg : message
+                        const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                        await canvas.Canvas.youtube({
+                            username: top,
+                            avatar: mediaData,
+                            content: bottom,
+                            dark: true
+                        })
+                            .then(async(c) => {
+                                var base64b = new Buffer.from(c).toString("base64");
+                                var b64b = "data:image/png;base64," + base64b;
+                                await client.sendFile(from, b64b, 'image.png', '', id);
+                            });
+                } else {
+                    await client.reply(from, mess[lang].wrongUse.twoWords(prefix+command), id)
+                }
             break
 
             case 'trigger':
@@ -2407,10 +2414,11 @@ const main = async (client, message) => {
                 const person = author.replace('@c.us', '')
                 if (mentionedJidList[0] == sender.id) {
                     await client.sendMp4AsSticker(from, './media/giphys/slap2.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
-                    return client.sendReplyWithMentions(from, mess[lang].slap.self(person), id);
+                    await client.sendReplyWithMentions(from, mess[lang].slap.self(person), id);
+                    return;
                 }
                 await client.sendMp4AsSticker(from, './media/giphys/slap.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
-                client.sendReplyWithMentions(from, mess[lang].slap.resp(person,argo[1]), id)
+                await client.sendReplyWithMentions(from, mess[lang].slap.resp(person,argo[1]), id)
             break
 
             case 'sleep':
@@ -2421,7 +2429,7 @@ const main = async (client, message) => {
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 const personp = author.replace('@c.us', '')
                 await client.sendImageAsSticker(from, './media/giphys/sleep.png', mess[lang].stickerMetadataImg(true))
-                client.sendReplyWithMentions(from, mess[lang].sleep.resp(personp), id)
+                await client.sendReplyWithMentions(from, mess[lang].sleep.resp(personp), id)
             break
 
             case 'wakeup':
@@ -2433,7 +2441,7 @@ const main = async (client, message) => {
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 const persond = author.replace('@c.us', '')
                 await client.sendImageAsSticker(from, './media/giphys/wakeup.png', mess[lang].stickerMetadataImg(true))
-                client.sendReplyWithMentions(from, mess[lang].wakeup.resp(persond), id)
+                await client.sendReplyWithMentions(from, mess[lang].wakeup.resp(persond), id)
             break
 
             case 'hug':
@@ -2447,10 +2455,11 @@ const main = async (client, message) => {
                 const personk = author.replace('@c.us', '');
                 if (mentionedJidList[0] == sender.id) {
                     await client.sendImageAsSticker(from, './media/giphys/hug2.png', mess[lang].stickerMetadataImg(true));
-                    return client.sendReplyWithMentions(from, mess[lang].hug.self(personk), id);
+                    await client.sendReplyWithMentions(from, mess[lang].hug.self(personk), id);
+                    return;
                 }
                 await client.sendMp4AsSticker(from, './media/giphys/hug.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
-                client.sendReplyWithMentions(from, mess[lang].hug.resp(personk, mentionedJidList[0].replace('@c.us', '')), id);
+                await client.sendReplyWithMentions(from, mess[lang].hug.resp(personk, mentionedJidList[0].replace('@c.us', '')), id);
             break
 
             case 'beijar':
@@ -2464,10 +2473,11 @@ const main = async (client, message) => {
                 const persona = author.replace('@c.us', '')
                 if (mentionedJidList[0] == sender.id) {
                     await client.sendImageAsSticker(from, './media/giphys/kiss2.png', mess[lang].stickerMetadataImg(true));
-                    return client.sendReplyWithMentions(from, mess[lang].kiss.self(persona), id);
+                    await client.sendReplyWithMentions(from, mess[lang].kiss.self(persona), id);
+                    return;
                 }
                 await client.sendMp4AsSticker(from, './media/giphys/kiss.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
-                client.sendReplyWithMentions(from, mess[lang].kiss.resp(persona, arge[1]), id)
+                await client.sendReplyWithMentions(from, mess[lang].kiss.resp(persona, arge[1]), id)
             break
 
             case 'kill':
@@ -2478,10 +2488,11 @@ const main = async (client, message) => {
                 const personay = author.replace('@c.us', '')
                 if (mentionedJidList == sender.id) {
                     await client.sendMp4AsSticker(from, './media/giphys/kill2.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
-                    return client.sendReplyWithMentions(from, mess[lang].kill.self(personay), id);
+                    await client.sendReplyWithMentions(from, mess[lang].kill.self(personay), id);
+                    return;
                 }
                 await client.sendMp4AsSticker(from, './media/giphys/kill.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
-                client.sendReplyWithMentions(from, mess[lang].kill.resp(personay, argy[1]), id)
+                await client.sendReplyWithMentions(from, mess[lang].kill.resp(personay, argy[1]), id)
             break
 
             case 'shrug':
