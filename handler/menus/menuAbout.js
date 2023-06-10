@@ -4,9 +4,6 @@ exports.pt_BR = (pushname, prefix, changelogs, version) => {
 
 _Em caso de dúvidas ou relatórios entre em contato com um dos nossos desenvolvedores:_
 
-𝑳: wa.me/5516994014308
-𝑭𝚶𝐗: wa.me/556296314606
-
 _*Lune Bot*_ - _*Versão ${version}*_`};
 
 
@@ -17,9 +14,6 @@ exports.en_US = (pushname, prefix, changelogs, version) => {
 	
 _For questions or reports, please contact one of our developers:_
 	
-𝑳: wa.me/5516994014308
-𝑭𝚶𝐗: wa.me/556296314606
-	
 _*Lune Bot*_ - _*Version ${version}*_`};
 
 
@@ -29,8 +23,5 @@ exports.es_ES = (pushname, prefix, changelogs, version) => {
 *Lune Bot es un Bot para Whatsapp hecho en Node.js con su desarrollo iniciado en el 2020, el proyecto es mantenido por un equipo de desarrolladores garantizando siempre la mejor experiencia de usuario.*	
 
 _Si tiene alguna pregunta o informe, comuníquese con uno de nuestros desarrolladores:_
-
-𝑳: wa.me/5516994014308
-𝑭𝚶𝐗: wa.me/556296314606
 
 _*Lune Bot*_ - _*Versión ${version}*_`};
