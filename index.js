@@ -23,7 +23,7 @@ const start = (client) => {
 		if (err) { return }
 		console.log(data)
 		console.log(color('[STARTED]'), color(time))
-		console.log(color('[INFO]'), `You are currently running Lune Bot on a "${currentOs}".`)
+		console.log(color('[INFO]'), `You are currently running Lune Bot on "${currentOs}".`)
 	});
 
 	client.setPresence(true);
@@ -33,8 +33,8 @@ const start = (client) => {
 
 	// Force it to keep the current session
 	client.onStateChanged((state) => {
-			console.log('[Client State]', state)
-			if (state === 'CONFLICT' || state === 'DISCONNECTED') client.forceRefocus()
+		console.log('[Client State]', state, time)
+		if (state === 'CONFLICT' || state === 'DISCONNECTED') client.forceRefocus()
 	})
 
 	// listening on message
