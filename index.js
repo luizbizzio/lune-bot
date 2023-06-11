@@ -39,9 +39,11 @@ const start = (client) => {
 
 	// listening on message
 	client.onMessage(async message => {
-		msgHandler.runBot(client, message).then((val) => {
-			console.log(val);
-		});
+		if ((config.only_groups && message.isGroupMsg) || !config.only_groups) {
+			msgHandler.runBot(client, message).then((val) => {
+				console.log(val);
+			});
+		};
 	});
 
 	client.onAddedToGroup(async (event) => {

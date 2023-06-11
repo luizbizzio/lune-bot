@@ -90,15 +90,16 @@ const main = async (client, message) => {
 
         var { body } = message;
         const { name, formattedTitle } = chat;
+        var user;
         try {
             var { pushname, verifiedName, formattedName } = sender;
             pushname = pushname || verifiedName || formattedName // verifiedName is the name of someone who uses a business account
+            user = sender.id;
         } catch {};
         const chats = (type === 'chat') ? body : ((type === 'image' || type === 'video')) ? caption : '';
         const botNumber = await client.getHostNumber() + '@c.us';
         //const isBot = quotedMsgId.includes(botNumber);
         const groupId = isGroupMsg ? chat.groupMetadata.id : '';
-        const user = sender.id;
         const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : '';
         const isGroupAdmins = groupAdmins.includes(user) || false;
         const isBotGroupAdmins = groupAdmins.includes(botNumber) || false;
@@ -1937,6 +1938,7 @@ const main = async (client, message) => {
                 client.simulateTyping(from, true)
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 var sorteioRolando = await db.get(`sorteioRolando.${from}`);
+                console.log(sorteioRolando);
                 if (sorteioRolando == 0 || sorteioRolando == undefined) return client.reply(from, mess[lang].giveaway.noGiveaway(), id);
                 var parts = await db.get(`participantesSorteio.${from}.${user}`);
                 if (parts) return client.reply(from, mess[lang].giveaway.alreadyOnGiveaway(), id);
@@ -2841,6 +2843,7 @@ const main = async (client, message) => {
                             .fileScan(data, vtImg)
                             .then(async(response) => {
                                 virusTotal.fileReport(response.resource).then(async (result) => {
+                                    // console.log(result);
                                     client.simulateTyping(from, true);
                                     var processTimeVT = mess[lang].responseTime(processTime(t, moment()));
                                     var saidaVT = mess[lang].scan.resp(result).replace(/false/gi, '✅').replace(/true/gi, '⛔');
