@@ -47,9 +47,19 @@ const start = (client) => {
 		if (state === 'CONFLICT' || state === 'DISCONNECTED') client.forceRefocus()
 	})
 
-	// listening on message
+	// Listening on message
 	client.onMessage(async message => {
-		if ((config.only_groups && message.isGroupMsg) || !config.only_groups) {
+		// Owner checker
+		var isowner = false;
+		var owners = config.owners;
+		for (let i = 0; i < owners.length; i++) {
+			if (owners[i]+'@c.us' == message.sender.id) {
+				isowner = true;
+			};
+		};
+
+		// Handler
+		if (isowner || (config.only_groups && message.isGroupMsg) || !config.only_groups) {
 			msgHandler.runBot(client, message).then((val) => {
 				console.log(val);
 			});

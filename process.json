@@ -4,9 +4,10 @@
   "watch": [
     "handler",
     "index.js",
-    "lib"
+    "lib",
+    "settings"
   ],
-  "ignore_watch": ["_IGNORE_session", "fonts", "Manual.txt", "node_modules", "settings", "lib/*.json", "data/*.json", "lib/data", "media", "json.sqlite", "package.json", "package-lock.json", "session.data.json", "logs"],
+  "ignore_watch": ["_IGNORE_session", "fonts", "Manual.txt", "node_modules", "lib/*.json", "data/*.json", "lib/data", "media", "json.sqlite", "package.json", "package-lock.json", "session.data.json", "logs"],
   "exec_mode": "cluster",
   "args": [
     "--color"
