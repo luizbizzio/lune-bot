@@ -3,7 +3,6 @@ const fs = require('fs-extra')
 const { color, messageLog } = require('./lib/utils')
 const msgHandler = require('./handler/commands')
 const canvas = require('discord-canvas')
-const startText = "Lune Bot";
 const figlet = require('figlet');
 const moment = require('moment-timezone');
 moment.tz.setDefault('South America/Brazil').locale('pt');
@@ -15,21 +14,29 @@ const config = require('./settings/config.json');
 var welkom;
 
 const { isOs, threatOsName } = require('./lib/checkos')
+const chalk = require('chalk')
 
 const currentOs = threatOsName();
 
+const startText = `Lune Bot\n                       for ${currentOs}`;
 const start = (client) => {
-	figlet(startText, function(err, data) { 
+	figlet(startText, async function(err, data) { 
 		if (err) { return }
 		console.log(data)
-		console.log(color('[STARTED]'), color(time))
-		console.log(color('[INFO]'), `You are currently running Lune Bot on "${currentOs}".`)
+		var bnum = await client.getHostNumber();
+		console.log(color('[INFO]', 'blue'), 'Default prefix:', chalk.yellow(config.defaultPrefix));
+		console.log(color('[INFO]', 'blue'), 'Bot number:', chalk.yellow(bnum));
+		console.log(color('[INFO]', 'blue'), 'Owner(s):', chalk.yellow(config.owners.join(', ')));
+		console.log(color('[INFO]', 'blue'), 'Anti-spam:', color(config.antispam ? 'Enabled' : 'Disabled', config.antispam ? 'green' : 'red'));
+		console.log(color('[INFO]', 'blue'), 'Only groups:', color(config.only_groups ? 'Enabled' : 'Disabled', config.only_groups ? 'green' : 'red'));
+		console.log(color('[INFO]', 'blue'), 'Running on:', color(currentOs, 'blue'));
+		console.log(color('[STARTED]', 'green'), color(time, 'green'));
 	});
 
 	client.setPresence(true);
 
 	// Message log for analytic
-	client.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
+	// client.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
 
 	// Force it to keep the current session
 	client.onStateChanged((state) => {
@@ -146,7 +153,6 @@ const start = (client) => {
 				};
 			};
 			if (event.action == 'remove') {
-				// remove event.who from the array welcomedUsers[event.chat].users
 				if (welcomedUsers.hasOwnProperty(event.chat)) {
 					if (welcomedUsers[event.chat].users.includes(event.who)) {
 						for (i in welcomedUsers[event.chat].users) {

@@ -93,8 +93,8 @@ const main = async (client, message) => {
         var user;
         try {
             var { pushname, verifiedName, formattedName } = sender;
-            pushname = pushname || verifiedName || formattedName // verifiedName is the name of someone who uses a business account
             user = sender.id;
+            pushname = pushname || verifiedName || formattedName || user.replace('@c.us', '') // verifiedName is the name of someone who uses a business account
         } catch {};
         const chats = (type === 'chat') ? body : ((type === 'image' || type === 'video')) ? caption : '';
         const botNumber = await client.getHostNumber() + '@c.us';
