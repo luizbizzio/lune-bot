@@ -11,6 +11,7 @@ var welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf
 const db = require('quick.db');
 const { mess } = require('./lib');
 const config = require('./settings/config.json');
+const package = require('./package.json');
 var welkom;
 
 const { isOs, threatOsName } = require('./lib/checkos')
@@ -24,11 +25,13 @@ const start = (client) => {
 		if (err) { return }
 		console.log(data)
 		var bnum = await client.getHostNumber();
+		console.log(color('[INFO]', 'blue'), 'Bot version:', color(package.version));
 		console.log(color('[INFO]', 'blue'), 'Default prefix:', chalk.yellow(config.defaultPrefix));
 		console.log(color('[INFO]', 'blue'), 'Bot number:', chalk.yellow(bnum));
-		console.log(color('[INFO]', 'blue'), 'Owner(s):', chalk.yellow(config.owners.join(', ')));
+		console.log(color('[INFO]', 'blue'), 'Owner(s):', chalk.yellow(config.owners.join(', ') || 'Not defined'));
 		console.log(color('[INFO]', 'blue'), 'Anti-spam:', color(config.antispam ? 'Enabled' : 'Disabled', config.antispam ? 'green' : 'red'));
 		console.log(color('[INFO]', 'blue'), 'Only groups:', color(config.only_groups ? 'Enabled' : 'Disabled', config.only_groups ? 'green' : 'red'));
+		console.log(color('[INFO]', 'blue'), 'Save musics:', color(config.save_musics ? 'Enabled' : 'Disabled', config.save_musics ? 'green' : 'red'));
 		console.log(color('[INFO]', 'blue'), 'Running on:', color(currentOs, 'blue'));
 		console.log(color('[STARTED]', 'green'), color(time, 'green'));
 	});
