@@ -2,7 +2,7 @@
 	"owners": [""],
 	"defaultPrefix": "#",
 	"executablePath": "/usr/bin/google-chrome-stable",
-	"only_groups": true,
+	"only_groups": false,
 	"antispam": false,
 	"save_musics": false,
 	"spam_limit": 5,
