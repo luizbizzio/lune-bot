@@ -4,7 +4,7 @@
 	"executablePath": "/usr/bin/google-chrome-stable",
 	"only_groups": false,
 	"antispam": false,
-	"save_musics": true,
+	"save_musics": false,
 	"spam_limit": 5,
 	"spam_delay": 3000,
 	"block_delay": 20000,
