@@ -193,7 +193,7 @@ const start = (client) => {
 const options = {
   sessionId: 'session',
 	multiDevice: true,
-  headless: 'new',
+  headless: true,
   qrTimeout: 0,
   authTimeout: 30,
 	killProcessOnTimeout: true,
