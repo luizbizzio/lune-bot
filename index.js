@@ -70,7 +70,7 @@ const start = (client) => {
 		welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
 		if (welkom.includes(event.id)) return;
 		welkom.push(event.id)
-		fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom))
+		fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom));
 	});
 
 	client.onGlobalParticipantsChanged(async (event) => {
