@@ -7,7 +7,7 @@
   "license": "GPL-3.0",
   "homepage": "https://github.com/luizbizzio/lune-bot",
   "scripts": {
-    "preinstall": "npm i -g pm2 nodemon installfont && pip install get-stick-bugged-lol rembg && node ./lib/installFonts.js",
+    "preinstall": "npm i -g pm2 nodemon && pip install get-stick-bugged-lol rembg && node ./lib/installFonts.js",
     "start": "pm2 start process.json --name lune-bot && pm2 monit",
     "stop": "pm2 stop lune-bot"
   },
