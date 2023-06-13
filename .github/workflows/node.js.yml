@@ -6,4 +6,4 @@ steps:
     cache: 'npm'
     cache-dependency-path: subdir/package-lock.json
 - run: npm install
-- run: npm start
+- run: node index.js
