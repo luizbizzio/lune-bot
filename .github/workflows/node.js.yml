@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-
+    working-directory: ./server/
     runs-on: ubuntu-latest
 
     strategy:
@@ -26,5 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: './server/package-lock.json'
     - run: npm i
     - run: npm start
