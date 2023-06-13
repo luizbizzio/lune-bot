@@ -7,7 +7,7 @@
   "license": "GPL-3.0",
   "homepage": "https://github.com/luizbizzio/lune-bot",
   "scripts": {
-    "preinstall": "npm i -g pm2 nodemon && pip install get-stick-bugged-lol rembg && node ./lib/installFonts.js",
+    "preinstall": "npm i -g pm2 nodemon installfont && pip install get-stick-bugged-lol rembg && node ./lib/installFonts.js",
     "start": "pm2 start process.json --name lune-bot && pm2 monit",
     "stop": "pm2 stop lune-bot"
   },
@@ -37,7 +37,6 @@
     "genius-lyrics-api": "^3.2.0",
     "got": "^11.8.6",
     "imgbb-uploader": "^1.5.1",
-    "installfont": "^0.0.12",
     "jimp": "^0.22.8",
     "jsbarcode": "^3.11.5",
     "moment-timezone": "^0.5.43",
