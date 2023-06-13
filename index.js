@@ -43,9 +43,9 @@ const start = (client) => {
 
 	// Force it to keep the current session
 	client.onStateChanged((state) => {
-		console.log('[Client State]', state, time);
-		if (state === 'CONFLICT' || state === 'DISCONNECTED') client.forceRefocus();
-	});
+		console.log('[Client State]', state, time)
+		if (state === 'CONFLICT' || state === 'DISCONNECTED') client.forceRefocus()
+	})
 
 	// Listening on message
 	client.onMessage(async message => {
@@ -69,7 +69,7 @@ const start = (client) => {
 	client.onAddedToGroup(async (event) => {
 		welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
 		if (welkom.includes(event.id)) return;
-		welkom.push(event.id);
+		welkom.push(event.id)
 		fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom))
 	});
 
