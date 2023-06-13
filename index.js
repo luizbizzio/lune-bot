@@ -1,8 +1,8 @@
-const wa = require('@open-wa/wa-automate')
-const fs = require('fs-extra')
-const { color, messageLog } = require('./lib/utils')
-const msgHandler = require('./handler/commands')
-const canvas = require('discord-canvas')
+const wa = require('@open-wa/wa-automate');
+const fs = require('fs-extra');
+const { color, messageLog } = require('./lib/utils');
+const msgHandler = require('./handler/commands');
+const canvas = require('discord-canvas');
 const figlet = require('figlet');
 const moment = require('moment-timezone');
 moment.tz.setDefault('South America/Brazil').locale('pt');
@@ -14,8 +14,8 @@ const config = require('./settings/config.json');
 const package = require('./package.json');
 var welkom;
 
-const { isOs, threatOsName } = require('./lib/checkos')
-const chalk = require('chalk')
+const { isOs, threatOsName } = require('./lib/checkos');
+const chalk = require('chalk');
 
 const currentOs = threatOsName();
 
