@@ -1,6 +1,6 @@
 const wa = require('@open-wa/wa-automate');
 const fs = require('fs-extra');
-const { color, messageLog } = require('./lib/utils');
+const { color } = require('./lib/utils');
 const msgHandler = require('./handler/commands');
 const canvas = require('discord-canvas');
 const figlet = require('figlet');
@@ -38,9 +38,6 @@ const start = async (client) => {
 
 	client.setPresence(true);
 
-	// Message log for analytic
-	// client.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
-
 	// Force it to keep the current session
 	client.onStateChanged((state) => {
 		console.log('[Client State]', state, time)
@@ -58,14 +55,16 @@ const start = async (client) => {
 		// Owner checker
 		var isowner = false;
 		var owners = config.owners;
-		for (let i = 0; i < owners.length; i++) {
-			if (owners[i]+'@c.us' == message.sender.id) {
-				isowner = true;
+		if (message.sender && message.sender.id) {
+			for (let i = 0; i < owners.length; i++) {
+				if (owners[i]+'@c.us' == message.sender.id) {
+					isowner = true;
+				};
 			};
 		};
 
 		// Handler
-		if (isowner || (config.only_groups && message.isGroupMsg) || !config.only_groups) {
+		if (message.sender && message.sender.id && (isowner || (config.only_groups && message.isGroupMsg) || !config.only_groups)) {
 			msgHandler.runBot(client, message).then((val) => {
 				console.log(val);
 			});
@@ -73,10 +72,25 @@ const start = async (client) => {
 	});
 
 	client.onAddedToGroup(async (event) => {
+		welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
+		var groupMembers = await client.getGroupMembers(event.id);
+		var groupMembersFormatted = [];
+		
+		for (let i = 0; i < groupMembers.length; i++) {
+			groupMembersFormatted.push(groupMembers[i].id);
+		};
+
+		welcomedUsers[event.id] = {
+			users: groupMembersFormatted
+		};
+
+		fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
+
+
 		welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
 		if (welkom.includes(event.id)) return;
 		welkom.push(event.id)
-		fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom));
+		fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom));	
 	});
 
 	client.onGlobalParticipantsChanged(async (event) => {
@@ -136,7 +150,6 @@ const start = async (client) => {
 			if (event.action == 'add') {	
 				if (welcomedUsers.hasOwnProperty(event.chat)) {
 					if (welcomedUsers[event.chat].users.includes(event.who)) {
-						console.log("To prevent the system from crashing, the user did not receive a welcome message!");
 						return;
 					};
 				} else {
