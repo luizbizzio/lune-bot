@@ -20,7 +20,7 @@ const chalk = require('chalk');
 const currentOs = threatOsName();
 
 const startText = `Lune Bot\n                       for ${currentOs}`;
-const start = (client) => {
+const start = async (client) => {
 	figlet(startText, async function(err, data) { 
 		if (err) { return }
 		console.log(data)
@@ -46,6 +46,12 @@ const start = (client) => {
 		console.log('[Client State]', state, time)
 		if (state === 'CONFLICT' || state === 'DISCONNECTED') client.forceRefocus()
 	})
+
+	var unread = await client.getAllUnreadMessages();
+	unread.forEach(async(message) => {
+		var oqid = (message.isGroupMsg ? message.chat.groupMetadata.id : '') || message.sender.id;
+		await client.sendSeen(oqid);
+	});
 
 	// Listening on message
 	client.onMessage(async message => {
