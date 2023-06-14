@@ -59,7 +59,6 @@ const virusTotal = new VirusTotalApi(config.api_keys.virus_total);
 var   welkom      = JSON.parse(fs.readFileSync('./data/welcome.json'));
 const atlk        = JSON.parse(fs.readFileSync('./data/antilink.json'));
 const atstk       = JSON.parse(fs.readFileSync('./data/autosticker.json'));
-const ban         = JSON.parse(fs.readFileSync('./data/banned.json'));
 const xp          = JSON.parse(fs.readFileSync('./data/xp.json'));
 const ranke       = JSON.parse(fs.readFileSync('./data/ranke.json'));
 const nivel       = JSON.parse(fs.readFileSync('./data/level.json'));
@@ -104,7 +103,6 @@ const main = async (client, message) => {
         const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : '';
         const isGroupAdmins = groupAdmins.includes(user) || false;
         const isBotGroupAdmins = groupAdmins.includes(botNumber) || false;
-        const isBanned = ban.includes(user);
 
         const enableFilter = config.antispam;
         
@@ -210,7 +208,7 @@ const main = async (client, message) => {
         };
 
 		// XP System
-		if (isGroupMsg && isxp && !rank.isWin(user) && !isBanned && !rankeed) {
+		if (isGroupMsg && isxp && !rank.isWin(user) && !rankeed) {
             try {
                 rank.wait(user);
                 const levelAtual = rank.getLevel(user, nivel, pushname);
@@ -230,7 +228,7 @@ const main = async (client, message) => {
         };
 
 		// Auto-Stk Image
-        if (autoSticker && !isCmd && !isBanned && isMedia && isImage) {
+        if (autoSticker && !isCmd && isMedia && isImage) {
             const mediaData = await decryptMedia(message, uaOverride)
             const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
             await client.sendImageAsSticker(from, imageBase64, mess[lang].stickerMetadataImg(true))
@@ -239,7 +237,7 @@ const main = async (client, message) => {
         }
 
         // Auto-Stk Video
-        if (autoSticker && !isCmd && !isBanned && isMedia && isVideo) {
+        if (autoSticker && !isCmd && isMedia && isVideo) {
     	    const mediaData = await decryptMedia(message, uaOverride)
         	const videoBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
 	        await client.sendMp4AsSticker(from, videoBase64, null, mess[lang].stickerMetadataVideo(10, '00:00:05.0', true, true), id)
@@ -252,13 +250,10 @@ const main = async (client, message) => {
         if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`))+1 || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
 
         // Command PV
-        if (isCmd && !isBanned && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
+        if (isCmd && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
 
         // Command GP
-        if (isCmd && !isBanned && isGroupMsg) { console.log(color('[GROUP]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
-
-        // Ignore banned
-        if (isCmd && isBanned) { return console.log(color('[BAN]', 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent',  color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
+        if (isCmd && isGroupMsg) { console.log(color('[GROUP]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
 
         if (enableFilter) {
             msgFilter.addFilter(sender.id, config.spam_delay, config.block_delay);
