@@ -56,14 +56,15 @@ const bitly = new BitlyClient(config.api_keys.bitly);
 const virusTotal = new VirusTotalApi(config.api_keys.virus_total);
 
 //JSONS
-var   welkom      = JSON.parse(fs.readFileSync('./data/welcome.json'));
-const atlk        = JSON.parse(fs.readFileSync('./data/antilink.json'));
-const atstk       = JSON.parse(fs.readFileSync('./data/autosticker.json'));
-const xp          = JSON.parse(fs.readFileSync('./data/xp.json'));
-const ranke       = JSON.parse(fs.readFileSync('./data/ranke.json'));
-const nivel       = JSON.parse(fs.readFileSync('./data/level.json'));
-const patents     = JSON.parse(fs.readFileSync('./data/patentes.json'));
-const pokedexJson = JSON.parse(fs.readFileSync("./media/pokedex/pokemons.json"));
+var   welkom        = JSON.parse(fs.readFileSync('./data/welcome.json'));
+var   welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
+const atlk          = JSON.parse(fs.readFileSync('./data/antilink.json'));
+const atstk         = JSON.parse(fs.readFileSync('./data/autosticker.json'));
+const xp            = JSON.parse(fs.readFileSync('./data/xp.json'));
+const ranke         = JSON.parse(fs.readFileSync('./data/ranke.json'));
+const nivel         = JSON.parse(fs.readFileSync('./data/level.json'));
+const patents       = JSON.parse(fs.readFileSync('./data/patentes.json'));
+const pokedexJson   = JSON.parse(fs.readFileSync('./media/pokedex/pokemons.json'));
 
 //Textos
 const {
@@ -98,7 +99,6 @@ const main = async (client, message) => {
         } catch {};
         const chats = (type === 'chat') ? body : ((type === 'image' || type === 'video')) ? caption : '';
         const botNumber = await client.getHostNumber() + '@c.us';
-        //const isBot = quotedMsgId.includes(botNumber);
         const groupId = isGroupMsg ? chat.groupMetadata.id : '';
         const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : '';
         const isGroupAdmins = groupAdmins.includes(user) || false;
@@ -196,7 +196,7 @@ const main = async (client, message) => {
 		};
                      
         // Antispam banned filter
-        if (enableFilter && ((db.get(`spam_blacklist`) && db.get(`spam_blacklist`).length > 0 && db.get(`spam_blacklist`).find(x => x.id === sender.id.replace("@c.us", "")) !== undefined) || (db.get(`spam_blacklist`).time < Date.now() - 86400000))) return;
+        if (enableFilter && ((db.get(`spam_blacklist`) && db.get(`spam_blacklist`).length > 0 && db.get(`spam_blacklist`).find(x => x.id === sender.id.replace("@c.us", "")) !== undefined) || (db.get(`spam_blacklist`).time < Date.now() - 43200000))) return;
 
 		// Tier System
         const check = rank.getLevel(user, nivel, pushname);
@@ -2594,6 +2594,19 @@ const main = async (client, message) => {
                     welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
                     if (args[0].toLowerCase() == 'on') {
                         if (welkom.includes(groupId)) return client.reply(from, mess[lang].welcome.alreadyOn(), id)
+                        welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
+                        var groupMembers = await client.getGroupMembers(groupId);
+                        var groupMembersFormatted = [];
+                        
+                        for (let i = 0; i < groupMembers.length; i++) {
+                            groupMembersFormatted.push(groupMembers[i].id);
+                        };
+
+                        welcomedUsers[groupId] = {
+                            users: groupMembersFormatted
+                        };
+
+                        fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
                         welkom.push(groupId)
                         fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom))
                         await client.reply(from, mess[lang].welcome.enable(), id)
@@ -2936,10 +2949,8 @@ const main = async (client, message) => {
                             .fileScan(data, vtImg)
                             .then(async(response) => {
                                 virusTotal.fileReport(response.resource).then(async (result) => {
-                                    // console.log(result);
                                     await client.simulateTyping(from, true);
                                     await client.sendSeen(from);
-                                    var processTimeVT = mess[lang].responseTime(processTime(t, moment()));
                                     var saidaVT = mess[lang].scan.resp(result).replace(/false/gi, '✅').replace(/true/gi, '⛔');
                                     var saidaVT = mess[lang].scan.resp(result).replace(/undefined/gi, '0');
                                     await client.reply(from, saidaVT, id);
@@ -3213,7 +3224,7 @@ const main = async (client, message) => {
 };
 
 const runBot = async (client, message) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(() => {
         main(client, message)
     });
 };
