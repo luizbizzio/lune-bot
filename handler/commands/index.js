@@ -81,6 +81,7 @@ const {
     menuUtil,
     menuXp,
 } = require('../menus');
+const { createDirs } = require('../../lib/functions');
 
 var prefix, lang;
 
@@ -715,6 +716,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return await client.reply(from, mess[lang].onlyGroups(), id)
                 if (!isGroupAdmins) return await client.reply(from, mess[lang].onlyAdmins(), id)
+                createDirs('./data');
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                     if (args[0].toLowerCase() == 'on') {
@@ -773,7 +775,7 @@ const main = async (client, message) => {
                 } else {
                     pepe = ppLink
                 }
-                let colorlib = JSON.parse(fs.readFileSync('./data/colorlevel.json'));
+                let colorlib = ["#ffa200","#f73909","#35ed02","#0430f2","#ee04f2","#fcfcfc","#eff700","#7f3d11"];
                 let colorlv = colorlib[Math.floor(Math.random() * colorlib.length)]
                 const minXp = 5 * Math.pow(userLevel-1, 2) + 50 * (userLevel-1) + 100 + Math.floor((userLevel-1) * 2);
                 const requiredXp = 5 * Math.pow(userLevel, 2) + 50 * userLevel + 100 + Math.floor(userLevel * 2);
