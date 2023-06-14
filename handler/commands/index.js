@@ -26,6 +26,7 @@ const yts = require('yt-search');
 const ytdl = require('ytdl-core');
 const db = require('quick.db');
 const config = require('../../settings/config.json');
+const { Configuration, OpenAIApi } = require("openai");
 
 var ffmpegPath;
 if (isOs('win32')) {
@@ -48,12 +49,14 @@ const { uploadImages } = fetcher;
 // Child Process
 const { exec } = require('child_process');
 
-// Outros
+// Other
 const version = JSON.parse(fs.readFileSync('./package.json')).version;
+var processedMessages = [];
 
 // API KEYS
 const bitly = new BitlyClient(config.api_keys.bitly);
 const virusTotal = new VirusTotalApi(config.api_keys.virus_total);
+const openai = new OpenAIApi(new Configuration({ apiKey: config.api_keys.chatgpt }));
 
 //JSONS
 var   welkom        = JSON.parse(fs.readFileSync('./data/welcome.json'));
@@ -66,7 +69,7 @@ const nivel         = JSON.parse(fs.readFileSync('./data/level.json'));
 const patents       = JSON.parse(fs.readFileSync('./data/patentes.json'));
 const pokedexJson   = JSON.parse(fs.readFileSync('./media/pokedex/pokemons.json'));
 
-//Textos
+//Texts
 const {
     menuAbout,
     menuAdmin,
@@ -621,10 +624,8 @@ const main = async (client, message) => {
                         } catch (err) {
                             var pic = errorurl;
                         }
-                        //var sts = await client.getStatus(qmid)
                         var adm = groupAdmins.includes(qmid) ? mess[lang].yes() : mess[lang].no();
                         
-                        //const { status } = sts
                         if (pic == undefined) {
                             var pfp = errorurl
                         } else {
@@ -3066,6 +3067,28 @@ const main = async (client, message) => {
                 if (args.length == 0) return client.reply(from, mess[lang].wrongUse.andPhrase(prefix+command), id)
                 await client.sendText(from, body.slice(4))
             break
+
+            case 'gpt':
+                await client.simulateTyping(from, true);
+                await client.sendSeen(from);
+                if (processedMessages.includes(id) || !body.startsWith(prefix)) return message;
+                processedMessages.push(id);
+                var content = body.slice(prefix.length+command.length+1);
+                var gptMessages = [
+                    { role: "system", content: "You are a helpful assistant." },
+                    ...(await client.getGptArray(from, 10)),
+                    { role: "user", content: content }
+                ];
+                await openai.createChatCompletion({
+                    model: "gpt-3.5-turbo",
+                    messages: gptMessages,
+                })
+                    .catch(e => console.error(e))
+                    .then(async(completion) => {
+                        await client.reply(from, completion.data.choices[0].message.content, id);
+                    });
+                    
+            break;
 
             case 'climate':
             case 'clima':
