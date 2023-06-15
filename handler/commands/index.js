@@ -2944,7 +2944,7 @@ const main = async (client, message) => {
                         var vtArch = isQuotedMsg ? quotedMsg : message
                         var vtFile = await decryptMedia(vtArch, uaOverride)
                         var rName = Math.random().toString(36).substring(7);
-                        var vtImg = './media/scan/'+rName+'.txt';
+                        var vtImg = './media/'+rName+'.txt';
                         fs.writeFileSync(vtImg, vtFile)
 
                         var data = fs.readFileSync(vtImg);
