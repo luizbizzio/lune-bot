@@ -245,6 +245,9 @@ function create() {
 			create();
 		};
 	})
-	.catch(err => console.log(err));
+	.catch(err => {
+		console.log(err);
+		process.exit(1);
+	});
 };
 create();
