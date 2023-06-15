@@ -3,7 +3,7 @@ const { decryptMedia } = require('@open-wa/wa-automate');
 const { isOs } = require('../../lib/checkos');
 const moment = require('moment-timezone');
 moment.tz.setDefault('America/Sao_paulo').locale('pt');
-require('node-gtts');
+require('better-node-gtts');
 
 // MODULES
 const fs = require('fs-extra');
@@ -1694,7 +1694,9 @@ const main = async (client, message) => {
             case 'tts':
             case 'texttospeech':
             case 'fala':
+            case 'speak':
             case 'falar':
+            case 'gtts':
                 await client.simulateRecording(from, true);
                 await client.sendSeen(from);
                     if (args.length < 1) return client.reply(from, mess[lang].tts.wrongUse(prefix+command), id);
@@ -1705,30 +1707,32 @@ const main = async (client, message) => {
                     if (isQuotedMsg) {
                         const quoteTextTts = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : '';
                         if (quoteTextTts.split('').length > 5000) return client.reply(from, mess[lang].maxText(5000), id);
-                        const ttsGB = require('node-gtts')(args[0].toLowerCase());
+                        var gtts = require('better-node-gtts');
                         const dataText = quoteTextTts;
                         if (dataText === '') return client.reply(from, mess[lang].tts.wrongUse(prefix+command), id);
                         try {
-                            ttsGB.save(tts_PATH, dataText, async function () {
+                            new gtts.Text2Speech(args[0]).save(tts_PATH, dataText).then(async () => {
                                 await client.sendPtt(from, tts_PATH, id);
                                 fs.unlinkSync(tts_PATH);
                             });
-                        } catch (err) {
+                        } catch (e) {
                             client.reply(from, mess[lang].somethingWentWrong(), id);
+                            console.log(e);
                         }
                     } else {
                         if (args.length == 1) return client.reply(from, mess[lang].tts.wrongUse(prefix+command), id);
                         if (body.split('').length > 5000) return client.reply(from, mess[lang].maxText(5000), id);
-                        const ttsGB = require('node-gtts')(args[0].toLowerCase())
+                        var gtts = require('better-node-gtts');
                         const dataText = body.slice(prefix.length+command.length+args[0].length+2);
                         if (dataText === '') return client.reply(from, mess[lang].tts.wrongUse(prefix+command), id);
                         try {
-                            ttsGB.save(tts_PATH, dataText, async function () {
+                            new gtts.Text2Speech(args[0]).save(tts_PATH, dataText).then(async () => {
                                 await client.sendPtt(from, tts_PATH, id);
                                 fs.unlinkSync(tts_PATH);
                             });
-                        } catch (err) {
+                        } catch (e) {
                             client.reply(from, mess[lang].somethingWentWrong(), id);
+                            console.log(e);
                         }
                     }
             break
