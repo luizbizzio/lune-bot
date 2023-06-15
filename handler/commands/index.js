@@ -41,9 +41,9 @@ if (isOs('win32')) {
     ffmpegPath = '/usr/bin/ffmpeg'; // Linux and others
 };
 
-createDir('./media/tmp/musics');
+createDir('./media/musics');
 const downloaderYt = new DownloadYTFile({
-  outputPath: './media/tmp/musics',
+  outputPath: './media/musics',
   ffmpegPath,
   maxParallelDownload: 1,
 });
@@ -1669,7 +1669,7 @@ const main = async (client, message) => {
                     var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
                     createDir('./media/tmp');
-                    var pathBase = './media/tmp/';
+                    var pathBase = './tmp/';
 
                     if (dadosMensagem.mimetype == "video/mp4") {
                         var tomp3filename = Math.floor(Math.random() * 1000000);
@@ -1708,7 +1708,7 @@ const main = async (client, message) => {
                     var arrCL = (arrVer.indexOf(args[0].toLowerCase()) > -1);
                     if (arrCL == false) return client.reply(from, mess[lang].tts.unknownLang(), id);
                     createDir('./media/tmp');
-                    var tts_PATH = "./media/tmp/"+Math.random().toString(36).substring(7)+".mp3";
+                    var tts_PATH = "./tmp/"+Math.random().toString(36).substring(7)+".mp3";
                     if (isQuotedMsg) {
                         const quoteTextTts = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : '';
                         if (quoteTextTts.split('').length > 5000) return client.reply(from, mess[lang].maxText(5000), id);
@@ -1756,7 +1756,7 @@ const main = async (client, message) => {
                         'explode', '2x', 'reverse', 'bass', 'acute', 'volume', 'nightcore', 'lo-fi', 'bathroom', 'slow',
                     ], tipoEfeito = body.slice(prefix.length+command.length+1).trim()
                     createDir('./media/tmp');
-                    var pathAudios = './media/tmp/';
+                    var pathAudios = './tmp/';
                     if (!efeitosSuportados.includes(tipoEfeito)) return client.reply(from, mess[lang].invalidOptions(['explode', '2x', 'reverse', 'bass', 'acute', 'volume', 'nightcore', 'lo-fi', 'bathroom', 'slow']), id)
                     if (msgMedia.type === "ptt" || msgMedia.type === "audio"){
                         var mediaData = await decryptMedia(msgMedia, uaOverride)
@@ -1827,8 +1827,8 @@ const main = async (client, message) => {
                 }
                 client.reply(from, mess[lang].play.resp(title, formatedTimeP), id);
 
-                createDir('./media/tmp/musics');
-                var pathPlay = `./media/tmp/musics/${videoId}`;
+                createDir('./media/musics');
+                var pathPlay = `./media/musics/${videoId}`;
                 fs.stat(`${pathPlay}.mp3`, async function(err) {
                     if (err == null) {
                         client.sendFile(from, `${pathPlay}.mp3`, `${videoId}.mp3`, '', id);
@@ -1887,7 +1887,7 @@ const main = async (client, message) => {
                     });
 
                     createDir('./media/tmp');
-                    var pathBase = './media/tmp/'
+                    var pathBase = './tmp/'
                     
                     var file = fs.createWriteStream(pathBase+videoId+'.mp4');
                     stream.pipe(file);
@@ -1928,7 +1928,7 @@ const main = async (client, message) => {
                     const upimgoh = isQuotedImage ? quotedMsg : message
                     const mediaData = await decryptMedia(upimgoh, uaOverride)
                     createDir('./media/tmp');
-                    var uplimg = './media/tmp/'+Math.random().toString(26).substring(7)+'.jpg'
+                    var uplimg = './tmp/'+Math.random().toString(26).substring(7)+'.jpg'
                     await fs.writeFile(uplimg, mediaData)
                     let options = {
                         apiKey: config.api_keys.imgbb,
@@ -2032,7 +2032,7 @@ const main = async (client, message) => {
 
                 var caminhoAudio, caminhoVideo;
                 createDir('./media/tmp');
-                var pathBase = './media/tmp/';
+                var pathBase = './tmp/';
 
                 if (dadosMensagem.mimetype == "video/mp4") {
                     caminhoVideo = pathBase+randomNameVideoMi;
@@ -2122,7 +2122,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (isMedia && type === 'image' || isQuotedImage) {
                     createDir('./media/tmp');
-                    var path = "./media/tmp/"+Math.random().toString(36).substring(7);
+                    var path = "./tmp/"+Math.random().toString(36).substring(7);
                     try {
                         const triggermd = isQuotedImage ? quotedMsg : message
                         const upTrigger = await decryptMedia(triggermd, uaOverride);
@@ -2156,7 +2156,7 @@ const main = async (client, message) => {
                 var mediaData = await decryptMedia(qtl, uaOverride);
                 
                 createDir('./media/tmp');
-                var path = "./media/tmp/"+Math.random().toString(36).substring(7);
+                var path = "./tmp/"+Math.random().toString(36).substring(7);
                 var filetype = qtl.mimetype.split('/')[1];
 
                 fs.writeFileSync(path+"."+filetype, mediaData, 'base64');
@@ -2958,7 +2958,7 @@ const main = async (client, message) => {
                         var vtFile = await decryptMedia(vtArch, uaOverride)
                         var rName = Math.random().toString(36).substring(7);
                         createDir('./media/tmp');
-                        var vtImg = './media/tmp/'+rName+'.txt';
+                        var vtImg = './tmp/'+rName+'.txt';
                         fs.writeFileSync(vtImg, vtFile)
 
                         var data = fs.readFileSync(vtImg);
