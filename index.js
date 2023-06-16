@@ -12,7 +12,6 @@ const db = require('quick.db');
 const { mess } = require('./lib');
 const config = require('./settings/config.json');
 const package = require('./package.json');
-var welkom;
 
 const { isOs, threatOsName } = require('./lib/checkos');
 const chalk = require('chalk');
@@ -86,19 +85,15 @@ const start = async (client) => {
 
 		fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
 
-
-		welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
-		if (welkom.includes(event.id)) return;
-		welkom.push(event.id)
-		fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom));	
+		if (db.get('welcome').includes(event.id)) return;
+		db.push('welcome', event.id);
 	});
 
 	client.onGlobalParticipantsChanged(async (event) => {
-		welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
 		const personr = event.who
 		const numebot = await client.getHostNumber() + '@c.us'
 		const isMyBot = personr.includes(numebot)
-		const isWelkom = welkom.includes(event.chat)
+		const isWelkom = db.get('welcome').includes(event.chat)
 		const eChat = await client.getContact(event.who)
 		let { pushname, verifiedName, formattedName } = eChat
 		pushname = pushname || verifiedName || formattedName
@@ -165,7 +160,7 @@ const start = async (client) => {
 					var linkWelcome = "./media/welcome/"+lnkw[lRW]
 					const welcomer = await new canvas.Welcome()
 						.setUsername(pushname)
-						.setDiscriminator(event.who.substring(6, 10))
+						.setDiscriminator(event.who.replace('@c.us', '').substring(event.who.replace('@c.us', '').length-4,event.who.replace('@c.us', '').length))
 						.setMemberCount(groupMetadata.participants.length)
 						.setGuildName(name || formattedTitle) 
 						.setAvatar(profile)
