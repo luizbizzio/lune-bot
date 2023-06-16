@@ -2486,12 +2486,9 @@ const main = async (client, message) => {
             case 'coin':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                const side = Math.floor(Math.random() * 2) + 1
-                if (side == 1) {
-                    client.sendImageAsSticker(from, './media/flip/cara.png', mess[lang].stickerMetadataImg(true))
-                } else {
-                    client.sendImageAsSticker(from, './media/flip/coroa.png', mess[lang].stickerMetadataImg(true))
-                }
+                var coinside = ["real1.png","real2.png","euro1.png","euro2.png"]
+                var flipcoin = Math.floor(Math.random() * coinside.length)
+                client.sendImageAsSticker(from, './media/coin/'+coinside[flipcoin], mess[lang].stickerMetadataImg(true))
             break
 
             case 'bata':
