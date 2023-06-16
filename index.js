@@ -8,7 +8,7 @@ const figlet = require('figlet');
 const moment = require('moment-timezone');
 moment.tz.setDefault('South America/Brazil').locale('pt');
 const time = moment().format('DD/MM/YYYY HH:mm:ss');
-var welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
+//var welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
 const db = require('quick.db');
 const { mess } = require('./lib');
 const config = require('./settings/config.json');
@@ -75,7 +75,6 @@ const start = async (client) => {
 	});
 
 	client.onAddedToGroup(async (event) => {
-		welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
 		var groupMembers = await client.getGroupMembers(event.id);
 		var groupMembersFormatted = [];
 		
@@ -83,11 +82,7 @@ const start = async (client) => {
 			groupMembersFormatted.push(groupMembers[i].id);
 		};
 
-		welcomedUsers[event.id] = {
-			users: groupMembersFormatted
-		};
-
-		fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
+		db.set(`welcomedUsers.${event.id}`, { users: groupMembersFormatted });
 
 		if (db.get('welcome').includes(event.id)) return;
 		db.push('welcome', event.id);
@@ -147,14 +142,12 @@ const start = async (client) => {
 
 		try {
 			if (event.action == 'add') {	
-				if (welcomedUsers.hasOwnProperty(event.chat)) {
-					if (welcomedUsers[event.chat].users.includes(event.who)) {
+				if (db.get('welcomedUsers').hasOwnProperty(event.chat)) {
+					if (db.get(`welcomedUsers.${event.chat}.users`).includes(event.who)) {
 						return;
 					};
 				} else {
-					welcomedUsers[event.chat] = {
-						users: []
-					};
+					db.set(`welcomedUsers.${event.chat}.users`, []);
 				};
 				if (isWelkom && !isMyBot) {
 					var profile = await client.getProfilePicFromServer(event.who);
@@ -178,24 +171,23 @@ const start = async (client) => {
 					const base64 = `data:image/png;base64,${welcomer.toBuffer().toString('base64')}`;
 					await client.sendFile(event.chat, base64, 'welcome.png', `${mess[lang].welcome.resp(pushname, name, formattedTitle)}`);
 
-					welcomedUsers[event.chat].users.push(event.who);
-					fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
+					db.push(`welcomedUsers.${event.chat}.users`, event.who);
 					console.log(color('[WELCOME]', 'blue'), color(`${event.who.replace("@c.us","")}`),'-', color(pushname), 'joined', color(`"${name || formattedTitle}"`));
 				};
 			};
 			if (event.action == 'remove') {
-				if (welcomedUsers.hasOwnProperty(event.chat)) {
-					if (welcomedUsers[event.chat].users.includes(event.who)) {
-						for (i in welcomedUsers[event.chat].users) {
-							if (welcomedUsers[event.chat].users[i] == event.who) {
-								welcomedUsers[event.chat].users.splice(i, 1);
+				if (db.get('welcomedUsers').hasOwnProperty(event.chat)) {
+					if (db.get(`welcomedUsers.${event.chat}.users`).includes(event.who)) {
+						for (i in db.get(`welcomedUsers.${event.chat}.users`)) {
+							if (db.get(`welcomedUsers.${event.chat}.users`)[i] == event.who) {
+								let tmpDb = db.get(`welcomedUsers.${event.chat}.users`);
+								tmpDb.splice(i, 1);
+								db.set(`welcomedUsers.${event.chat}.users`, tmpDb);
 								break;
 							};
 						};
 					};
 				};
-
-				fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
 			};
 		} catch (err) {
 			console.log(err);
