@@ -2035,8 +2035,8 @@ const main = async (client, message) => {
                 const randomNameAudioMi = `${Math.floor(Math.random() * 10000)}.mp3`;
                 const randomNameVideoMi = `${Math.floor(Math.random() * 10000)}.mp4`;
                 var dadosMensagem = quotedMsg ? quotedMsg : message;
-                if (dadosMensagem.duration > 420) return client.reply(from, mess[lang].maxDuration('7', 'm', 'vid'), id);
                 if (dadosMensagem.mimetype != "video/mp4" && dadosMensagem.type != "audio" && dadosMensagem.type != "ptt") return client.reply(from, mess[lang].wrongUse.quotingAudioOrVideo(prefix+command), id);
+                if (dadosMensagem.duration > 120) return client.reply(from, mess[lang].maxDuration('2', 'm', 'vid'), id);
                 var mediaData = await decryptMedia(dadosMensagem, uaOverride);
 
                 var caminhoAudio, caminhoVideo;
