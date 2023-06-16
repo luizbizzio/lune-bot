@@ -41,9 +41,10 @@ if (isOs('win32')) {
     ffmpegPath = '/usr/bin/ffmpeg'; // Linux and others
 };
 
-createDir('./media/musics');
+if (config.save_musics) createDir('./media/musics');
+createDir('./tmp');
 const downloaderYt = new DownloadYTFile({
-  outputPath: './media/musics',
+  outputPath: config.save_musics ? './media/musics' : './tmp',
   ffmpegPath,
   maxParallelDownload: 1,
 });
@@ -86,7 +87,6 @@ const {
     menuUtil,
     menuXp,
 } = require('../menus');
-const { createDirs } = require('../../lib/functions');
 
 var prefix, lang;
 
@@ -714,7 +714,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return await client.reply(from, mess[lang].onlyGroups(), id)
                 if (!isGroupAdmins) return await client.reply(from, mess[lang].onlyAdmins(), id)
-                createDirs('./data');
+                createDir('./data');
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                     if (args[0].toLowerCase() == 'on') {
@@ -1826,8 +1826,12 @@ const main = async (client, message) => {
                 }
                 client.reply(from, mess[lang].play.resp(title, formatedTimeP), id);
 
-                createDir('./media/musics');
-                var pathPlay = `./media/musics/${videoId}`;
+                if (config.save_musics) {
+                    createDir('./media/musics');
+                } else {
+                    createDir('./tmp');
+                };
+                var pathPlay = `./${config.save_musics ? 'media/musics/' : 'tmp/'}${videoId}`;
                 fs.stat(`${pathPlay}.mp3`, async function(err) {
                     if (err == null) {
                         client.sendFile(from, `${pathPlay}.mp3`, `${videoId}.mp3`, '', id);
@@ -2501,11 +2505,11 @@ const main = async (client, message) => {
                 const argo = body.trim().split(' ')
                 const person = author.replace('@c.us', '')
                 if (mentionedJidList[0] == sender.id) {
-                    await client.sendMp4AsSticker(from, './media/giphys/slap2.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
+                    await client.sendMp4AsSticker(from, './media/fun/slap2.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
                     await client.sendReplyWithMentions(from, mess[lang].slap.self(person), id);
                     return;
                 }
-                await client.sendMp4AsSticker(from, './media/giphys/slap.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
+                await client.sendMp4AsSticker(from, './media/fun/slap.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
                 await client.sendReplyWithMentions(from, mess[lang].slap.resp(person,argo[1]), id)
             break
 
@@ -2517,7 +2521,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 const personp = author.replace('@c.us', '')
-                await client.sendImageAsSticker(from, './media/giphys/sleep.png', mess[lang].stickerMetadataImg(true))
+                await client.sendImageAsSticker(from, './media/fun/sleep.png', mess[lang].stickerMetadataImg(true))
                 await client.sendReplyWithMentions(from, mess[lang].sleep.resp(personp), id)
             break
 
@@ -2530,7 +2534,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 const persond = author.replace('@c.us', '')
-                await client.sendImageAsSticker(from, './media/giphys/wakeup.png', mess[lang].stickerMetadataImg(true))
+                await client.sendImageAsSticker(from, './media/fun/wakeup.png', mess[lang].stickerMetadataImg(true))
                 await client.sendReplyWithMentions(from, mess[lang].wakeup.resp(persond), id)
             break
 
@@ -2545,11 +2549,11 @@ const main = async (client, message) => {
                 const argk = body.trim().split(' ');
                 const personk = author.replace('@c.us', '');
                 if (mentionedJidList[0] == sender.id) {
-                    await client.sendImageAsSticker(from, './media/giphys/hug2.png', mess[lang].stickerMetadataImg(true));
+                    await client.sendImageAsSticker(from, './media/fun/hug2.png', mess[lang].stickerMetadataImg(true));
                     await client.sendReplyWithMentions(from, mess[lang].hug.self(personk), id);
                     return;
                 }
-                await client.sendMp4AsSticker(from, './media/giphys/hug.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
+                await client.sendMp4AsSticker(from, './media/fun/hug.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
                 await client.sendReplyWithMentions(from, mess[lang].hug.resp(personk, mentionedJidList[0].replace('@c.us', '')), id);
             break
 
@@ -2564,11 +2568,11 @@ const main = async (client, message) => {
                 const arge = body.trim().split(' ')
                 const persona = author.replace('@c.us', '')
                 if (mentionedJidList[0] == sender.id) {
-                    await client.sendImageAsSticker(from, './media/giphys/kiss2.png', mess[lang].stickerMetadataImg(true));
+                    await client.sendImageAsSticker(from, './media/fun/kiss2.png', mess[lang].stickerMetadataImg(true));
                     await client.sendReplyWithMentions(from, mess[lang].kiss.self(persona), id);
                     return;
                 }
-                await client.sendMp4AsSticker(from, './media/giphys/kiss.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
+                await client.sendMp4AsSticker(from, './media/fun/kiss.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
                 await client.sendReplyWithMentions(from, mess[lang].kiss.resp(persona, arge[1]), id)
             break
 
@@ -2580,11 +2584,11 @@ const main = async (client, message) => {
                 const argy = body.trim().split(' ')
                 const personay = author.replace('@c.us', '')
                 if (mentionedJidList == sender.id) {
-                    await client.sendMp4AsSticker(from, './media/giphys/kill2.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
+                    await client.sendMp4AsSticker(from, './media/fun/kill2.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id);
                     await client.sendReplyWithMentions(from, mess[lang].kill.self(personay), id);
                     return;
                 }
-                await client.sendMp4AsSticker(from, './media/giphys/kill.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
+                await client.sendMp4AsSticker(from, './media/fun/kill.mp4', { fps: 10 }, mess[lang].stickerMetadataImg(true), id)
                 await client.sendReplyWithMentions(from, mess[lang].kill.resp(personay, argy[1]), id)
             break
 
