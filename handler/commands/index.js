@@ -65,8 +65,8 @@ const openai = new OpenAIApi(new Configuration({ apiKey: config.api_keys.chatgpt
 //JSONS
 var   welkom        = JSON.parse(fs.readFileSync('./data/welcome.json'));
 var   welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
-const atlk          = JSON.parse(fs.readFileSync('./data/antilink.json'));
-const atstk         = JSON.parse(fs.readFileSync('./data/autosticker.json'));
+if (!db.get('antilink')) db.set('antilink', []);
+if (!db.get('autosticker')) db.set('autosticker', []);
 const xp            = JSON.parse(fs.readFileSync('./data/xp.json'));
 const ranke         = JSON.parse(fs.readFileSync('./data/ranke.json'));
 const nivel         = JSON.parse(fs.readFileSync('./data/level.json'));
@@ -141,8 +141,8 @@ const main = async (client, message) => {
         const isQuotedMsg = quotedMsg
         const uaOverride = process.env.UserAgent
         const rankeed = ranke.includes(user)
-        const isAntiLink = isGroupMsg ? atlk.includes(groupId) : false
-        const autoSticker = atstk.includes(oqid)
+        const isAntiLink = isGroupMsg ? db.get('antilink').includes(groupId) : false
+        const autoSticker = db.get('autosticker').includes(oqid)
         
         lang =
         (
@@ -252,19 +252,19 @@ const main = async (client, message) => {
         }
 
         // Check commands [ANTISPAM]
-        if (isCmd && !isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) {
+        if (isCmd && !isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang }, isCmd)) {
             console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`)) || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red'));
         } else {
-            if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) {
+            if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang }, isCmd)) {
                 console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`)) || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red'));
             } else {
                 // Command PV
-                if (!(enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) && isCmd && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
+                if (!(enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang }, isCmd)) && isCmd && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
 
                 // Command GP
-                if (!(enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) && isCmd && isGroupMsg) { console.log(color('[GROUP]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
+                if (!(enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang }, isCmd)) && isCmd && isGroupMsg) { console.log(color('[GROUP]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
 
-                if (enableFilter) {
+                if (enableFilter && isCmd) {
                     msgFilter.addFilter(sender.id, config.spam_delay, config.block_delay);
                 };
             };
@@ -2352,8 +2352,8 @@ const main = async (client, message) => {
                 var gpOwner = chat.groupMetadata.owner;
                 var welgrp = welkom.includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var xpgp = xp.includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
-                var lzex = atlk.includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
-                var autostk = atstk.includes(oqid) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
+                var lzex = db.get('antilink').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
+                var autostk = db.get('autosticker').includes(oqid) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var grouppic, pfp;
                 try {
                     grouppic = await client.getProfilePicFromServer(groupId) || undefined;
@@ -2659,17 +2659,18 @@ const main = async (client, message) => {
             case 'antlnk':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
+                if (!isBotGroupAdmins) return await client.reply(from, mess[lang].botIsntAdmin(), id)
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                     if (args[0].toLowerCase() == 'on') {
-                        if (atlk.includes(groupId)) return client.reply(from, mess[lang].antilink.alreadyOn(), id)
-                        atlk.push(groupId)
-                        fs.writeFileSync('./data/antilink.json', JSON.stringify(atlk))
+                        if (db.get('antilink').includes(groupId)) return client.reply(from, mess[lang].antilink.alreadyOn(), id)
+                        db.push('antilink', groupId);
                         await client.reply(from, mess[lang].antilink.enable(), id)
                     } else if (args[0].toLowerCase() == 'off') {
-                        let atlkPrm = atlk.indexOf(groupId)
-                        atlk.splice(atlkPrm, 1)
-                        fs.writeFileSync('./data/antilink.json', JSON.stringify(atlk))
+                        let tmpDb = db.get('antilink');
+                        let dbPrm = tmpDb.indexOf(groupId);
+                        tmpDb.splice(dbPrm, 1);
+                        db.set('antilink', tmpDb);
                         await client.reply(from, mess[lang].antilink.disable(), id)
                     } else {
                         await client.reply(from, mess[lang].onOrOff(), id)
@@ -2686,15 +2687,15 @@ const main = async (client, message) => {
                 if (isGroupMsg && isGroupAdmins || !isGroupMsg) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id);
                     if (args[0].toLowerCase() == 'on') {
-                        if (atstk.includes(oqid) && isGroupMsg) return client.reply(from, mess[lang].autostk.alreadyOn(), id)
-                        if (atstk.includes(oqid) && !isGroupMsg) return client.reply(from, mess[lang].autostk.alreadyOn(), id)
-                        atstk.push(oqid)
-                        fs.writeFileSync('./data/autosticker.json', JSON.stringify(atstk))
+                        if (db.get('autosticker').includes(oqid) && isGroupMsg) return client.reply(from, mess[lang].autostk.alreadyOn(), id)
+                        if (db.get('autosticker').includes(oqid) && !isGroupMsg) return client.reply(from, mess[lang].autostk.alreadyOn(), id)
+                        db.push('autosticker', oqid);
                         await client.reply(from, mess[lang].autostk.enable(), id)
                     } else if (args[0].toLowerCase() == 'off') {
-                        let atstkPrm = atstk.indexOf(oqid)
-                        atstk.splice(atstkPrm, 1)
-                        fs.writeFileSync('./data/autosticker.json', JSON.stringify(atstk))
+                        let tmpDb = db.get('autosticker');
+                        let dbPrm = tmpDb.indexOf(oqid);
+                        tmpDb.splice(dbPrm, 1);
+                        db.set('autosticker', tmpDb);
                         await client.reply(from, mess[lang].autostk.disable(), id)
                     } else {
                         await client.reply(from, mess[lang].onOrOff(), id)
