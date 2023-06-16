@@ -1,6 +1,7 @@
 const wa = require('@open-wa/wa-automate');
 const fs = require('fs-extra');
 const { color } = require('./lib/utils');
+const { createDir, deleteDir } = require('./lib/functions');
 const msgHandler = require('./handler/commands');
 const canvas = require('discord-canvas');
 const figlet = require('figlet');
@@ -36,6 +37,9 @@ const start = async (client) => {
 	});
 
 	client.setPresence(true);
+
+	await deleteDir('./tmp');
+	await createDir('./tmp');
 
 	// Force it to keep the current session
 	client.onStateChanged((state) => {
