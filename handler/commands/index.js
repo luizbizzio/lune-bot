@@ -55,7 +55,6 @@ const { exec } = require('child_process');
 // Other
 const version = JSON.parse(fs.readFileSync('./package.json')).version;
 var processedMessages = [];
-db.set(`spam`, {});
 
 // API KEYS
 const bitly = new BitlyClient(config.api_keys.bitly);
@@ -63,14 +62,13 @@ const virusTotal = new VirusTotalApi(config.api_keys.virus_total);
 const openai = new OpenAIApi(new Configuration({ apiKey: config.api_keys.chatgpt }));
 
 //JSONS
-var   welkom        = JSON.parse(fs.readFileSync('./data/welcome.json'));
-var   welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
+db.set(`spam`, {});
+if (!db.get('welcome')) db.set('welcome', []);
 if (!db.get('antilink')) db.set('antilink', []);
 if (!db.get('autosticker')) db.set('autosticker', []);
-const xp            = JSON.parse(fs.readFileSync('./data/xp.json'));
-const ranke         = JSON.parse(fs.readFileSync('./data/ranke.json'));
+if (!db.get('gamexp')) db.set('gamexp', []);
+var   welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
 const nivel         = JSON.parse(fs.readFileSync('./data/level.json'));
-const patents       = JSON.parse(fs.readFileSync('./data/patentes.json'));
 const pokedexJson   = JSON.parse(fs.readFileSync('./media/pokedex/pokemons.json'));
 
 //Texts
@@ -121,7 +119,7 @@ const main = async (client, message) => {
         };
         const isImage = type === 'image'
         const isVideo = type === 'video'
-        const isxp = xp.includes(groupId)
+        const isxp = db.get('gamexp').includes(groupId)
 
         // Bot Prefix
         var oqid = groupId || user;
@@ -140,7 +138,6 @@ const main = async (client, message) => {
         const isQuotedGif = quotedMsg && quotedMsg.mimetype === 'image/gif'
         const isQuotedMsg = quotedMsg
         const uaOverride = process.env.UserAgent
-        const rankeed = ranke.includes(user)
         const isAntiLink = isGroupMsg ? db.get('antilink').includes(groupId) : false
         const autoSticker = db.get('autosticker').includes(oqid)
         
@@ -205,6 +202,7 @@ const main = async (client, message) => {
         if (enableFilter && ((db.get(`spam_blacklist`) && db.get(`spam_blacklist`).length > 0 && db.get(`spam_blacklist`).find(x => x.id === sender.id.replace("@c.us", "")) !== undefined) || (db.get(`spam_blacklist`).time < Date.now() - 43200000))) return;
 
 		// Tier System
+        const patents = mess[lang].tiers();
         const check = rank.getLevel(user, nivel, pushname);
         var patente;
         for (i in patents) {
@@ -214,7 +212,7 @@ const main = async (client, message) => {
         };
 
 		// XP System
-		if (isGroupMsg && isxp && !rank.isWin(user) && !rankeed) {
+		if (isGroupMsg && isxp && !rank.isWin(user)) {
             try {
                 rank.wait(user);
                 const levelAtual = rank.getLevel(user, nivel, pushname);
@@ -724,40 +722,20 @@ const main = async (client, message) => {
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                     if (args[0].toLowerCase() == 'on') {
-                        if (xp.includes(groupId)) return client.reply(from, mess[lang].xp.xpAlreadyOn(), id)
-                        xp.push(groupId)
-                        fs.writeFileSync('./data/xp.json', JSON.stringify(xp))
+                        if (db.get('gamexp').includes(groupId)) return client.reply(from, mess[lang].xp.xpAlreadyOn(), id)
+                        db.push('gamexp', groupId)
                         await client.reply(from, mess[lang].xp.xpOn(), id)
                     } else if (args[0].toLowerCase() == 'off') {
-                        let xpPrm = xp.indexOf(groupId)
-                        xp.splice(xpPrm, 1)
-                        fs.writeFileSync('./data/xp.json', JSON.stringify(xp))
+                        let tmpDb = db.get('gamexp');
+                        let dbPrm = tmpDb.indexOf(groupId);
+                        tmpDb.splice(dbPrm, 1);
+                        db.set('gamexp', tmpDb);
                         await client.reply(from, mess[lang].xp.xpOff(), id)
                     } else {
                     client.reply(from, mess[lang].onOrOff(), id);
                     }
                 } else {
                     await client.reply(from, mess[lang].onlyAdmins(), id)
-                }
-            break
-
-            case 'exitgame':
-                await client.simulateTyping(from, true);
-                await client.sendSeen(from);
-                if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
-                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id)
-                if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
-                if (args[0].toLowerCase() == 'off') {
-                    if (xp.includes(user)) return client.reply(from, mess[lang].exitGame.alreadyOff(), id)
-                    ranke.push(user)
-                    fs.writeFileSync('./data/ranke.json', JSON.stringify(ranke))
-                    await client.reply(from, mess[lang].exitGame.off(), id)
-                } else if (args[0].toLowerCase() == 'on') {
-                    if (!xp.includes(user)) return client.reply(from, mess[lang].exitGame.alreadyOn(), id)
-                    let rankePrm = ranke.indexOf(user)
-                    ranke.splice(rankePrm, 1)
-                    fs.writeFileSync('./data/ranke.json', JSON.stringify(ranke))
-                    await client.reply(from, mess[lang].exitGame.on(), id)
                 }
             break
 
@@ -2350,8 +2328,8 @@ const main = async (client, message) => {
                     admgp += `-> @${admon.replace(/@c.us/g, '')}\n`;
                 }
                 var gpOwner = chat.groupMetadata.owner;
-                var welgrp = welkom.includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
-                var xpgp = xp.includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
+                var welgrp = db.get('welcome').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
+                var xpgp = db.get('gamexp').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var lzex = db.get('antilink').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var autostk = db.get('autosticker').includes(oqid) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var grouppic, pfp;
@@ -2614,9 +2592,8 @@ const main = async (client, message) => {
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
-                    welkom = JSON.parse(fs.readFileSync('./data/welcome.json'));
                     if (args[0].toLowerCase() == 'on') {
-                        if (welkom.includes(groupId)) return client.reply(from, mess[lang].welcome.alreadyOn(), id)
+                        if (db.get('welcome').includes(groupId)) return client.reply(from, mess[lang].welcome.alreadyOn(), id)
                         welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
                         var groupMembers = await client.getGroupMembers(groupId);
                         var groupMembersFormatted = [];
@@ -2630,14 +2607,14 @@ const main = async (client, message) => {
                         };
 
                         fs.writeFileSync('./data/welcomedUsers.json', JSON.stringify(welcomedUsers));
-                        welkom.push(groupId)
-                        fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom))
+                        db.push('welcome', groupId);
                         await client.reply(from, mess[lang].welcome.enable(), id)
                     } else if (args[0].toLowerCase() == 'off') {
-                        if (!welkom.includes(groupId)) return client.reply(from, mess[lang].welcome.alreadyOff(), id)
-                        let welkomPrm = welkom.indexOf(groupId)
-                        welkom.splice(welkomPrm, 1)
-                        fs.writeFileSync('./data/welcome.json', JSON.stringify(welkom))
+                        if (!db.get('welcome').includes(groupId)) return client.reply(from, mess[lang].welcome.alreadyOff(), id)
+                        let tmpDb = db.get('welcome');
+                        let dbPrm = tmpDb.indexOf(groupId);
+                        tmpDb.splice(dbPrm, 1);
+                        db.set('welcome', tmpDb);
                         await client.reply(from, mess[lang].welcome.disable(), id)
                     } else {
                         await client.reply(from, mess[lang].onOrOff(), id)
@@ -2659,10 +2636,10 @@ const main = async (client, message) => {
             case 'antlnk':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                if (!isBotGroupAdmins) return await client.reply(from, mess[lang].botIsntAdmin(), id)
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                     if (args[0].toLowerCase() == 'on') {
+                        if (!isBotGroupAdmins) return await client.reply(from, mess[lang].botIsntAdmin(), id)
                         if (db.get('antilink').includes(groupId)) return client.reply(from, mess[lang].antilink.alreadyOn(), id)
                         db.push('antilink', groupId);
                         await client.reply(from, mess[lang].antilink.enable(), id)
