@@ -69,6 +69,7 @@ if (!db.get('participantesSorteio')) db.set('participantesSorteio', {});
 if (!db.get('prefix')) db.set('prefix', {});
 if (!db.get('marriage')) db.set('marriage', {});
 if (!db.get('marryDate')) db.set('marryDate', []);
+if (!db.get('pendingMarry')) db.set('pendingMarry', []);
 if (!db.get('usr_lang')) db.set('usr_lang', []);
 if (!db.get('welcome')) db.set('welcome', []);
 if (!db.get('welcomedUsers')) db.set('welcomedUsers', {});
