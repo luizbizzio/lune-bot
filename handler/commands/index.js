@@ -1631,7 +1631,6 @@ const main = async (client, message) => {
                         await client.sendFile(from, pokeImg, `${pk.id}.png`, await mess[lang].pokedex.resp(pk, translate), id)
                         client.sendImageAsSticker(from, pokeStk, mess[lang].stickerMetadataImg(true), id)
                     } catch (err) {
-                        console.log(err)
                         client.reply(from, mess[lang].pokedex.dontExistPokemon(), id)
                     }
             break;
