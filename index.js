@@ -1,27 +1,26 @@
 const wa = require('@open-wa/wa-automate');
 const fs = require('fs-extra');
-const { color } = require('./lib/utils');
+const { color } = require('./lib/utils.js');
 const { createDir, deleteDir } = require('./lib/functions');
-const msgHandler = require('./handler/commands');
+const msgHandler = require('./handler/messages.js');
 const canvas = require('discord-canvas');
 const figlet = require('figlet');
 const moment = require('moment-timezone');
-moment.tz.setDefault('South America/Brazil').locale('pt');
+moment.tz.setDefault('America/Sao_Paulo').locale('en');
 const time = moment().format('DD/MM/YYYY HH:mm:ss');
-//var welcomedUsers = JSON.parse(fs.readFileSync('./data/welcomedUsers.json', 'utf8'));
 const db = require('quick.db');
 const { mess } = require('./lib');
 const config = require('./settings/config.json');
 const package = require('./package.json');
 
-const { isOs, threatOsName } = require('./lib/checkos');
+const { isOs, threatOsName } = require('./lib/checkos.js');
 const chalk = require('chalk');
 
 const currentOs = threatOsName();
 
 const startText = `Lune Bot\n                       for ${currentOs}`;
 const start = async (client) => {
-	figlet(startText, async function(err, data) { 
+	figlet(startText, async function (err, data) {
 		if (err) { return }
 		console.log(data)
 		var bnum = await client.getHostNumber();
@@ -48,7 +47,7 @@ const start = async (client) => {
 	})
 
 	var unread = await client.getAllUnreadMessages();
-	unread.forEach(async(message) => {
+	unread.forEach(async (message) => {
 		var oqid = (message.isGroupMsg ? message.chat.groupMetadata.id : '') || message.sender.id;
 		await client.sendSeen(oqid);
 	});
@@ -60,7 +59,7 @@ const start = async (client) => {
 		var owners = config.owners;
 		if (message.sender && message.sender.id) {
 			for (let i = 0; i < owners.length; i++) {
-				if (owners[i]+'@c.us' == message.sender.id) {
+				if (owners[i] + '@c.us' == message.sender.id) {
 					isowner = true;
 				};
 			};
@@ -77,7 +76,7 @@ const start = async (client) => {
 	client.onAddedToGroup(async (event) => {
 		var groupMembers = await client.getGroupMembers(event.id);
 		var groupMembersFormatted = [];
-		
+
 		for (let i = 0; i < groupMembers.length; i++) {
 			groupMembersFormatted.push(groupMembers[i].id);
 		};
@@ -111,37 +110,37 @@ const start = async (client) => {
 				personr.startsWith('239') || // Sao Tome and Principe
 				personr.startsWith('670')    // East-Timor
 			) ? "pt_BR" :
-			(
-				personr.startsWith('34') ||  // Spain
-				personr.startsWith('51') ||  // Peru
-				personr.startsWith('52') ||  // Mexico
-				personr.startsWith('53') ||  // Cuba
-				personr.startsWith('54') ||  // Argentina
-				personr.startsWith('56') ||  // Chile
-				personr.startsWith('57') ||  // Colombia
-				personr.startsWith('58')  || // Venezuela
-				personr.startsWith('591') || // Bolivia
-				personr.startsWith('506') || // Costa Rica
-				personr.startsWith('503') || // El Salvador
-				personr.startsWith('593') || // Ecuador
-				personr.startsWith('502') || // Guatemala
-				personr.startsWith('504') || // Honduras
-				personr.startsWith('505') || // Nicaragua
-				personr.startsWith('507') || // Panama
-				personr.startsWith('595') || // Paraguay
-				personr.startsWith('598')    // Uruguay
-			) ? "es_ES" : "en_US";
+				(
+					personr.startsWith('34') ||  // Spain
+					personr.startsWith('51') ||  // Peru
+					personr.startsWith('52') ||  // Mexico
+					personr.startsWith('53') ||  // Cuba
+					personr.startsWith('54') ||  // Argentina
+					personr.startsWith('56') ||  // Chile
+					personr.startsWith('57') ||  // Colombia
+					personr.startsWith('58') || // Venezuela
+					personr.startsWith('591') || // Bolivia
+					personr.startsWith('506') || // Costa Rica
+					personr.startsWith('503') || // El Salvador
+					personr.startsWith('593') || // Ecuador
+					personr.startsWith('502') || // Guatemala
+					personr.startsWith('504') || // Honduras
+					personr.startsWith('505') || // Nicaragua
+					personr.startsWith('507') || // Panama
+					personr.startsWith('595') || // Paraguay
+					personr.startsWith('598')    // Uruguay
+				) ? "es_ES" : "en_US";
 
 		if (!db.get('usr_lang')) db.set('usr_lang', []);
 		for (let i = 0; i < db.get('usr_lang').length; i++) {
 			if (db.get('usr_lang')[i].id == personr.replace(/@c.us/gi, '')) {
 				lang = db.get('usr_lang')[i].lang;
-				i = db.get('usr_lang').length+1;
+				i = db.get('usr_lang').length + 1;
 			};
 		};
 
 		try {
-			if (event.action == 'add') {	
+			if (event.action == 'add') {
 				if (db.get('welcomedUsers').hasOwnProperty(event.chat)) {
 					if (db.get(`welcomedUsers.${event.chat}.users`).includes(event.who)) {
 						return;
@@ -152,14 +151,14 @@ const start = async (client) => {
 				if (isWelkom && !isMyBot) {
 					var profile = await client.getProfilePicFromServer(event.who);
 					if (!profile || profile == '' || profile == undefined || profile == "ERROR: 400" || profile == "ERROR: 401" || profile == "ERROR: 402" || profile == "ERROR: 403" || profile == "ERROR: 404") profile = fs.readFileSync("./media/welcome/profile.png");
-					var lnkw = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg"]
+					var lnkw = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg"]
 					var lRW = Math.floor(Math.random() * lnkw.length)
-					var linkWelcome = "./media/welcome/"+lnkw[lRW]
+					var linkWelcome = "./media/welcome/" + lnkw[lRW]
 					const welcomer = await new canvas.Welcome()
 						.setUsername(pushname)
-						.setDiscriminator(event.who.replace('@c.us', '').substring(event.who.replace('@c.us', '').length-4,event.who.replace('@c.us', '').length))
+						.setDiscriminator(event.who.replace('@c.us', '').substring(event.who.replace('@c.us', '').length - 4, event.who.replace('@c.us', '').length))
 						.setMemberCount(groupMetadata.participants.length)
-						.setGuildName(name || formattedTitle) 
+						.setGuildName(name || formattedTitle)
 						.setAvatar(profile)
 						.setColor('border', '#00100C')
 						.setColor('username-box', '#00100C')
@@ -172,7 +171,7 @@ const start = async (client) => {
 					await client.sendFile(event.chat, base64, 'welcome.png', `${mess[lang].welcome.resp(pushname, name, formattedTitle)}`);
 
 					db.push(`welcomedUsers.${event.chat}.users`, event.who);
-					console.log(color('[WELCOME]', 'blue'), color(`${event.who.replace("@c.us","")}`),'-', color(pushname), 'joined', color(`"${name || formattedTitle}"`));
+					console.log(color('[WELCOME]', 'blue'), color(`${event.who.replace("@c.us", "")}`), '-', color(pushname), 'joined', color(`"${name || formattedTitle}"`));
 				};
 			};
 			if (event.action == 'remove') {
@@ -201,25 +200,25 @@ const start = async (client) => {
 };
 
 const options = {
-  sessionId: 'session',
-  multiDevice: true,
-  headless: true,
-  qrTimeout: 0,
-  authTimeout: 30,
-  killProcessOnTimeout: true,
-  restartOnCrash: start,
-  cacheEnabled: true,
-  disableSpins: true,
-  useChrome: true,
-  legacy: false,
-  killProcessOnBrowserClose: true,
-  deleteSessionDataOnLogout: true,
-  throwErrorOnTosBlock: false,
-  waitForRipeSession: true,
-  devtools: false,
-  debug: false,
-  popup: false,
-  skipUpdateCheck: true,
+	sessionId: 'session',
+	multiDevice: true,
+	headless: true,
+	qrTimeout: 0,
+	authTimeout: 30,
+	killProcessOnTimeout: true,
+	restartOnCrash: start,
+	cacheEnabled: true,
+	disableSpins: true,
+	useChrome: true,
+	legacy: false,
+	killProcessOnBrowserClose: true,
+	deleteSessionDataOnLogout: true,
+	throwErrorOnTosBlock: false,
+	waitForRipeSession: true,
+	devtools: false,
+	debug: false,
+	popup: false,
+	skipUpdateCheck: true,
 };
 
 if (!isOs('win32')) {
@@ -229,16 +228,16 @@ if (!isOs('win32')) {
 function create() {
 	wa.create(options)
 		.then(client => {
-		try {
-			start(client);
-		} catch (err) {
-			client.kill();
-			create();
-		};
-	})
-	.catch(err => {
-		console.log(err);
-		process.exit(1);
-	});
+			try {
+				start(client);
+			} catch (err) {
+				client.kill();
+				create();
+			};
+		})
+		.catch(err => {
+			console.log(err);
+			process.exit(1);
+		});
 };
 create();
