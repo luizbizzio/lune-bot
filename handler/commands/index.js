@@ -55,6 +55,7 @@ const { exec } = require('child_process');
 // Other
 const version = JSON.parse(fs.readFileSync('./package.json')).version;
 var processedMessages = [];
+db.set(`spam`, {});
 
 // API KEYS
 const bitly = new BitlyClient(config.api_keys.bitly);
@@ -251,17 +252,22 @@ const main = async (client, message) => {
         }
 
         // Check commands [ANTISPAM]
-        if (isCmd && !isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`))+1 || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
-        if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) { return console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`))+1 || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red')) }
+        if (isCmd && !isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) {
+            console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`)) || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red'));
+        } else {
+            if (isCmd && isGroupMsg && enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) {
+                console.log(color(`[${parseInt(db.get(`spam.${sender.id.replace("@c.us", "")}`)) || 0}][SPAM]`, 'red'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'red'));
+            } else {
+                // Command PV
+                if (!(enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) && isCmd && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
 
-        // Command PV
-        if (isCmd && !isGroupMsg) { console.log(color('[CHAT]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
+                // Command GP
+                if (!(enableFilter && msgFilter.isFiltered(sender.id, client, { mess, lang })) && isCmd && isGroupMsg) { console.log(color('[GROUP]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
 
-        // Command GP
-        if (isCmd && isGroupMsg) { console.log(color('[GROUP]', 'white'), color(`${sender.id.replace("@c.us","")}`),'-', color(pushname), 'sent', color(`[${body}]`, 'green'), 'in group', color(`"${name || formattedTitle}"`), 'at', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'orange')) }
-
-        if (enableFilter) {
-            msgFilter.addFilter(sender.id, config.spam_delay, config.block_delay);
+                if (enableFilter) {
+                    msgFilter.addFilter(sender.id, config.spam_delay, config.block_delay);
+                };
+            };
         };
 
         switch (command) {
