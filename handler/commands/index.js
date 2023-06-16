@@ -30,7 +30,7 @@ const { Configuration, OpenAIApi } = require("openai");
 
 // Paths
 const { meme, fetcher, conversao, imgEditor, translate, api, functions, rank, imageFromGoogle, marriage, utils, mess } = require('../../lib');
-const { sleep, createDir } = functions;
+const { sleep, createDir, deleteDir } = functions;
 const { msgFilter, color, processTime } = utils;
 const { uploadImages } = fetcher;
 
@@ -42,7 +42,7 @@ if (isOs('win32')) {
 };
 
 if (config.save_musics) createDir('./media/musics');
-createDir('./tmp');
+
 const downloaderYt = new DownloadYTFile({
   outputPath: config.save_musics ? './media/musics' : './tmp',
   ffmpegPath,
