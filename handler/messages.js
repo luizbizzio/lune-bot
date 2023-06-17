@@ -726,7 +726,6 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return await client.reply(from, mess[lang].onlyGroups(), id)
                 if (!isGroupAdmins) return await client.reply(from, mess[lang].onlyAdmins(), id)
-                createDir('./data');
                 if (isGroupMsg && isGroupAdmins || isGroupMsg && isowner) {
                     if (args.length !== 1) return client.reply(from, mess[lang].onOrOff(), id)
                     if (args[0].toLowerCase() == 'on') {
@@ -2802,7 +2801,7 @@ const main = async (client, message) => {
             case 'vocêsabia?':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                const rcurio = fs.readFileSync(`./media/text/curiosidades-${lang}.txt`).toString().split('\n')
+                const rcurio = fs.readFileSync(`./media/text/curio-${lang}.txt`).toString().split('\n')
                 const rsidd = rcurio[Math.floor(Math.random() * rcurio.length)]
                 await client.reply(from, rsidd, id)
                 break
