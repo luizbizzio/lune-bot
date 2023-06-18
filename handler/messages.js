@@ -1133,26 +1133,57 @@ const main = async (client, message) => {
                 if (args.length == 0) {
                     var emojis = JSON.parse(fs.readFileSync('./media/emojis/kitchen_names.json', 'utf8'));
                     var fileUse = await emojis[Math.floor(Math.random() * emojis.length)];
-                    emoji1 = fileUse.split("_")[0].replace('u', '');
-                    emoji2 = fileUse.split("_")[1].replace('u', '');
+                    emoji1 = fileUse.split("_")[0];
+                    emoji2 = fileUse.split("_")[1];
                 } else {
-                    emoji1 = await args[0].codePointAt(0).toString(16) || undefined;
-                    emoji2 = await args[1].codePointAt(0).toString(16) || undefined;
+                    emoji1 = await args[0].codePointAt(0).toString(16);
+                    emoji2 = await args[1].codePointAt(0).toString(16) || args[0].codePointAt(0).toString(16);
+                    emoji1 = "u"+emoji1;
+                    emoji2 = "u"+emoji2;
                 };
 
-                fs.readFile(`./media/emojis/kitchen/u${emoji1}_u${emoji2}.png`, async (err) => {
-                    if (err) {
-                        fs.readFile(`./media/emojis/kitchen/u${emoji2}_u${emoji1}.png`, async (errr) => {
-                            if (errr) {
-                                client.reply(from, mess[lang].ek.dontCombine(), id);
-                            };
-                            await client.sendImageAsSticker(from, `./media/emojis/kitchen/u${emoji2}_u${emoji1}.png`, mess[lang].stickerMetadataImg(true));
-                        });
-                    };
-                    await client.sendImageAsSticker(from, `./media/emojis/kitchen/u${emoji1}_u${emoji2}.png`, mess[lang].stickerMetadataImg(true));
-                });
-                break;
+                var knownSupportedDates = [
+                    "20201001",
+                    "20210218",
+                    "20210521",
+                    "20210831",
+                    "20211115",
+                    "20220110",
+                    "20220203",
+                    "20220406",
+                    "20220506",
+                    "20220815",
+                    "20220823",
+                    "20221101",
+                    "20221107",
+                    "20230126",
+                    "20230301",
+                    "20230405",
+                    "20230418",
+                ];
 
+                var rootUrl = "https://www.gstatic.com/android/keyboard/emojikitchen";
+                
+                for (var d = 0; d < knownSupportedDates.length; d++) {
+                    var date = knownSupportedDates[d];
+
+                    try {
+                        await client.sendImageAsSticker(from, `${rootUrl}/${date}/${emoji2}/${emoji2}_${emoji1}.png`, mess[lang].stickerMetadataImg(true))
+                        return;
+                    } catch (e) {
+                        try {
+                            await client.sendImageAsSticker(from, `${rootUrl}/${date}/${emoji1}/${emoji1}_${emoji2}.png`, mess[lang].stickerMetadataImg(true))
+                            return;
+                        } catch (e2) {
+                            if (d >= knownSupportedDates.length-1) {
+                                return client.reply(from, mess[lang].ek.dontCombine(), id);
+                            } else {
+                                continue;
+                            };
+                        };
+                    };
+                };
+                break;
 
             case 'emoji':
             case 'emote':
