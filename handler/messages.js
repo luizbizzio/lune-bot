@@ -2512,7 +2512,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 const personp = author.replace('@c.us', '')
-                await client.sendImageAsSticker(from, './media/fun/sleep.png', mess[lang].stickerMetadataImg(true))
+                await client.sendImageAsSticker(from, './media/fun/sleep.jpg', mess[lang].stickerMetadataImg(true))
                 await client.sendReplyWithMentions(from, mess[lang].sleep.resp(personp), id)
                 break
 
@@ -2525,7 +2525,7 @@ const main = async (client, message) => {
                 await client.sendSeen(from);
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 const persond = author.replace('@c.us', '')
-                await client.sendImageAsSticker(from, './media/fun/wakeup.png', mess[lang].stickerMetadataImg(true))
+                await client.sendImageAsSticker(from, './media/fun/wakeup.jpg', mess[lang].stickerMetadataImg(true))
                 await client.sendReplyWithMentions(from, mess[lang].wakeup.resp(persond), id)
                 break
 
@@ -2539,7 +2539,7 @@ const main = async (client, message) => {
                 if (mentionedJidList.length == 0 || mentionedJidList.length > 1) return client.reply(from, mess[lang].wrongUse.tagSomeone(prefix + command), id);
                 const personk = author.replace('@c.us', '');
                 if (mentionedJidList[0] == sender.id) {
-                    await client.sendImageAsSticker(from, './media/fun/hug2.png', mess[lang].stickerMetadataImg(true));
+                    await client.sendImageAsSticker(from, './media/fun/hug2.jpg', mess[lang].stickerMetadataImg(true));
                     await client.sendReplyWithMentions(from, mess[lang].hug.self(personk), id);
                     return;
                 }
@@ -2558,7 +2558,7 @@ const main = async (client, message) => {
                 const arge = body.trim().split(' ')
                 const persona = author.replace('@c.us', '')
                 if (mentionedJidList[0] == sender.id) {
-                    await client.sendImageAsSticker(from, './media/fun/kiss2.png', mess[lang].stickerMetadataImg(true));
+                    await client.sendImageAsSticker(from, './media/fun/kiss2.jpg', mess[lang].stickerMetadataImg(true));
                     await client.sendReplyWithMentions(from, mess[lang].kiss.self(persona), id);
                     return;
                 }
