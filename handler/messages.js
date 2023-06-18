@@ -132,7 +132,6 @@ const main = async (client, message) => {
         // Bot Prefix
         var oqid = groupId || user;
         prefix = db.get(`prefix.${oqid}`) || config.defaultPrefix;
-        if (!db.get(`prefix.${oqid}`)) { db.set(`prefix.${oqid}`, config.defaultPrefix) };
 
         body = (type === 'chat' && body.startsWith(prefix) ? body : (((type === 'image' || type === 'video') && caption) && caption.startsWith(prefix)) ? caption : '')
         var command = body.slice(prefix.length).trim().split(/ +/).shift().toLowerCase();
@@ -210,12 +209,14 @@ const main = async (client, message) => {
         if (enableFilter && ((db.get(`spam_blacklist`) && db.get(`spam_blacklist`).length > 0 && db.get(`spam_blacklist`).find(x => x.id === sender.id.replace("@c.us", "")) !== undefined) || (db.get(`spam_blacklist`).time < Date.now() - 43200000))) return;
 
         // Tier System
-        const patents = mess[lang].tiers();
-        const check = rank.getLevel(user, db.get('level'), pushname);
-        var patente;
-        for (i in patents) {
-            if (check >= patents[i].lv) {
-                patente = patents[i].name + " " + patents[i].emoji;
+        if (isGroupMsg && isxp) {
+            const patents = mess[lang].tiers();
+            const check = rank.getLevel(user, db.get('level'), pushname);
+            var patente;
+            for (i in patents) {
+                if (check >= patents[i].lv) {
+                    patente = patents[i].name + " " + patents[i].emoji;
+                };
             };
         };
 
@@ -1665,7 +1666,7 @@ const main = async (client, message) => {
                         caminhoVideo = pathBase + tomp3filename + '.mp4';
                         fs.writeFileSync(caminhoVideo, mediaData, "base64")
                         try {
-                            caminhoAudio = await conversao.converterMp4ParaMp3(caminhoVideo)
+                            caminhoAudio = await conversao.converterMp4ParaMp3(caminhoVideo);
                             fs.unlinkSync(caminhoVideo);
 
                             client.sendFile(from, caminhoAudio, `${tomp3filename}.mp3`, ``, id).then(() => {
@@ -2351,7 +2352,7 @@ const main = async (client, message) => {
                 };
                 var textF = mess[lang].groupinfo.info({ groupname, totalMem, welgrp, lzex, xpgp, autostk, prefix, desc, gpOwner, admgp });
                 if (pfp == false || pfp.includes('ERROR: 404')) {
-                    client.sendFile(from, './media/welcome/pfo.png', 'pfo.png', textF, id)
+                    client.sendFile(from, './media/welcome/pfo.jpg', 'pfo.jpg', textF, id)
                         .catch(() => {
                             client.reply(from, mess[lang].somethingWentWrong(), id);
                         });
@@ -3038,7 +3039,7 @@ const main = async (client, message) => {
                     prefixer = args[0]
                     if (prefixer.split('').length !== 1) return client.reply(from, mess[lang].prefix.tooBig(), id);
 
-                    var blockChar = "#$&-+/!?:;*|~^.,%";
+                    var blockChar = "#$&-+/!?:;|~^.%";
                     blockChar.split('');
 
                     let pos = null
