@@ -204,8 +204,9 @@ const main = async (client, message) => {
         if (enableFilter && ((db.get(`spam_blacklist`) && db.get(`spam_blacklist`).length > 0 && db.get(`spam_blacklist`).find(x => x.id === sender.id.replace("@c.us", "")) !== undefined) || (db.get(`spam_blacklist`).time < Date.now() - 43200000))) return;
 
         // Tier System
+        var patents;
         if (isGroupMsg && isxp) {
-            const patents = mess[lang].tiers();
+            patents = mess[lang].tiers();
             const check = rank.getLevel(user, db.get('level'), pushname);
             var patente;
             for (i in patents) {
@@ -833,12 +834,13 @@ const main = async (client, message) => {
 
                 cklvl.sort(function (a, b) { return b.xp - a.xp; });
 
-                if (cklvl.length < 10) return client.reply(from, mess[lang].top10.insuficientPlayers(10), id);
+                var playersTop = 10;
+                if (cklvl.length < 10) playersTop = cklvl.length;
 
                 var boardf = mess[lang].top10.top();
                 try {
                     var patente;
-                    for (let i = 0; i < 10; i++) {
+                    for (let i = 0; i < playersTop; i++) {
                         var role;
                         for (b in patents) {
                             if (cklvl[i].level >= patents[b].lv) {
@@ -853,6 +855,7 @@ const main = async (client, message) => {
                             boardf += mess[lang].top10.resp((i + 1), cklvl[i].nick, cklvl[i].xp, cklvl[i].level, role);
                         }
                     }
+                    boardf += mess[lang].top10.bott(cklvl.length);
                     await client.reply(from, boardf, id);
                 } catch (err) {
                     console.log(err)
@@ -1133,8 +1136,8 @@ const main = async (client, message) => {
                 } else {
                     emoji1 = await args[0].codePointAt(0).toString(16);
                     emoji2 = await args[1].codePointAt(0).toString(16) || args[0].codePointAt(0).toString(16);
-                    emoji1 = "u"+emoji1;
-                    emoji2 = "u"+emoji2;
+                    emoji1 = "u" + emoji1;
+                    emoji2 = "u" + emoji2;
                 };
 
                 var knownSupportedDates = [
@@ -1158,7 +1161,7 @@ const main = async (client, message) => {
                 ];
 
                 var rootUrl = "https://www.gstatic.com/android/keyboard/emojikitchen";
-                
+
                 for (var d = 0; d < knownSupportedDates.length; d++) {
                     var date = knownSupportedDates[d];
 
@@ -1170,7 +1173,7 @@ const main = async (client, message) => {
                             await client.sendImageAsSticker(from, `${rootUrl}/${date}/${emoji1}/${emoji1}_${emoji2}.png`, mess[lang].stickerMetadataImg(true))
                             return;
                         } catch (e2) {
-                            if (d >= knownSupportedDates.length-1) {
+                            if (d >= knownSupportedDates.length - 1) {
                                 return client.reply(from, mess[lang].ek.dontCombine(), id);
                             } else {
                                 continue;
@@ -1465,9 +1468,14 @@ const main = async (client, message) => {
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
                 try {
-                    if (args.length === 0) return client.reply(from, mess[lang].wrongUse.andSeed(prefix + command), id)
+                    var seed;
+                    if (args.length === 0) {
+                        seed = Math.floor(Math.random() * (9999999999 - 1000000000));
+                    } else {
+                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    var seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/human/${encodeURIComponent(seed)}.svg`, 'pixelgen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
@@ -1478,9 +1486,14 @@ const main = async (client, message) => {
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
                 try {
-                    if (args.length === 0) return client.reply(from, mess[lang].wrongUse.andSeed(prefix + command), id)
+                    var seed;
+                    if (args.length === 0) {
+                        seed = Math.floor(Math.random() * (9999999999 - 1000000000));
+                    } else {
+                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    var seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/bottts/${seed}.svg`, 'botgen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
@@ -1491,9 +1504,14 @@ const main = async (client, message) => {
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
                 try {
-                    if (args.length === 0) return client.reply(from, mess[lang].wrongUse.andSeed(prefix + command), id)
+                    var seed;
+                    if (args.length === 0) {
+                        seed = Math.floor(Math.random() * (9999999999 - 1000000000));
+                    } else {
+                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    var seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/avataaars/${seed}.svg`, 'avatargen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
@@ -1504,9 +1522,14 @@ const main = async (client, message) => {
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
                 try {
-                    if (args.length === 0) return client.reply(from, mess[lang].wrongUse.andSeed(prefix + command), id)
+                    var seed;
+                    if (args.length === 0) {
+                        seed = Math.floor(Math.random() * (9999999999 - 1000000000));
+                    } else {
+                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    var seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                    
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/micah/${seed}.svg`, 'avatargen2.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
@@ -2214,7 +2237,7 @@ const main = async (client, message) => {
                     var topText = top.trim().replace(/\s/g, '_').replace(/\?/g, '~q').replace(/\%/g, '~p').replace(/\#/g, '~h').replace(/\//g, '~s');
                     var bottomText = bottom.trim().replace(/\s/g, '_').replace(/\?/g, '~q').replace(/\%/g, '~p').replace(/\#/g, '~h').replace(/\//g, '~s');
                     fetchBase64(`https://api.memegen.link/images/custom/${encodeURIComponent(topText)}/${encodeURIComponent(bottomText)}.png?background=${imageUrl}`, 'image/png')
-                        .then(async(result) => await client.sendFile(from, result, 'image.png', '', id).catch((err) => console.error(err)));
+                        .then(async (result) => await client.sendFile(from, result, 'image.png', '', id).catch((err) => console.error(err)));
                 } else {
                     await client.reply(from, mess[lang].meme.wrongUse(prefix + command), id)
                 }
