@@ -27,6 +27,7 @@ const ytdl = require('ytdl-core');
 const db = require('quick.db');
 const config = require('../settings/config.json');
 const { Configuration, OpenAIApi } = require("openai");
+const { executablePath } = require('../');
 
 // Paths
 const { fetcher, conversao, imgEditor, translate, api, functions, rank, imageFromGoogle, marriage, utils, mess } = require('../lib');
@@ -625,7 +626,7 @@ const main = async (client, message) => {
                             var estadoCivil = mess[lang].profile.marriagedWith(estadoCivil.replace("@c.us", ""), marryTime.days);
                         };
                         try {
-                            var namae = rank.getInfo(qmid, db.get('level')).nick;
+                            var namae = '@'+mentionedJidList[0].replace('@c.us', '');
                         } catch (err) {
                             break;
                         }
@@ -644,7 +645,7 @@ const main = async (client, message) => {
                         }
                         await client.sendFile(from, pfp, 'pfo.jpg', mess[lang].profile.resp(namae, adm, estadoCivil, rank.getLevel(qmid, db.get('level'), pushname), rank.getXp(qmid, db.get('level'), pushname), (5 * Math.pow(rank.getLevel(qmid, db.get('level'), pushname), 2) + 50 * rank.getLevel(qmid, db.get('level'), pushname) + 100), patente, isxp), id)
                             .catch(() => {
-                                client.sendFile(from, './media/welcome/profile.png', 'profile.png', msgF, id)
+                                client.sendFile(from, './media/welcome/profile.png', 'profile.png', mess[lang].profile.resp(namae, adm, estadoCivil, rank.getLevel(qmid, db.get('level'), pushname), rank.getXp(qmid, db.get('level'), pushname), (5 * Math.pow(rank.getLevel(qmid, db.get('level'), pushname), 2) + 50 * rank.getLevel(qmid, db.get('level'), pushname) + 100), patente, isxp), id)
                                     .catch((err) => {
                                         console.log(err);
                                         client.reply(from, mess[lang].somethingWentWrong(), id);
@@ -763,7 +764,7 @@ const main = async (client, message) => {
                 }
                 let colorlib = ["#ffa200", "#f73909", "#35ed02", "#0430f2", "#ee04f2", "#fcfcfc", "#eff700", "#7f3d11"];
                 let colorlv = colorlib[Math.floor(Math.random() * colorlib.length)]
-                const minXp = 5 * Math.pow(userLevel - 1, 2) + 50 * (userLevel - 1) + 100 + Math.floor((userLevel - 1) * 2);
+                const minXp = userLevel == 1 ? 0 : (5 * Math.pow((userLevel - 1), 2) + 50 * (userLevel - 1) + 100 + Math.floor((userLevel - 1) * 2));
                 const requiredXp = 5 * Math.pow(userLevel, 2) + 50 * userLevel + 100 + Math.floor(userLevel * 2);
                 const ranq = new canvas.Rank()
                     .setAvatar(pepe)
@@ -1110,7 +1111,10 @@ const main = async (client, message) => {
                 var query = body.slice(prefix.length + command.length + 1);
                 if (!query || args.length < 1 || !args) return client.reply(from, mess[lang].wrongUse.andSearch(prefix + command), id);
                 if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                var imageF = await imageFromGoogle.get(query);
+                var imageF = await imageFromGoogle.get(query, {
+                    headless: true,
+                    executablePath: executablePath
+                });
                 if (imageF.includes("No results found")) return client.reply(from, mess[lang].noResultFound(), id);
                 await client.sendImageAsSticker(from, imageF, mess[lang].stickerMetadataImg(true));
                 break
@@ -1228,10 +1232,8 @@ const main = async (client, message) => {
             case 'moe':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                var puppeteeroptions = { headless: "true" };
-                if (!isOs('win32')) {
-                    puppeteeroptions.executablePath = config.executablePath;
-                }
+                var puppeteeroptions = { headless: true, executablePath: executablePath };
+
                 var browser = await require('puppeteer').launch(puppeteeroptions);
                 var page = await browser.newPage()
 
@@ -1283,15 +1285,15 @@ const main = async (client, message) => {
                 var filetype = qtlnobg.mimetype.split('/')[1];
 
                 createDir('./tmp');
-                fs.writeFileSync(`./tmp${filename}.${filetype}`, mediaData);
+                fs.writeFileSync(`./tmp/${filename}.${filetype}`, mediaData);
 
                 var argsEx = "-ae 1";
-                await exec(`rembg i ./tmp${filename}.${filetype} ./tmp${filename}.png ${argsEx}`, async function (err) {
+                await exec(`rembg i ./tmp/${filename}.${filetype} ./tmp/${filename}.png ${argsEx}`, async function (err) {
                     if (err) { console.log(err); return client.reply(from, mess[lang].somethingWentWrong(), id); };
 
-                    fs.unlinkSync(`./tmp${filename}.${filetype}`);
-                    await client.sendImageAsSticker(from, `./tmp${filename}.png`, mess[lang].stickerMetadataImg(true));
-                    fs.unlinkSync(`./tmp${filename}.png`);
+                    fs.unlinkSync(`./tmp/${filename}.${filetype}`);
+                    await client.sendImageAsSticker(from, `./tmp/${filename}.png`, mess[lang].stickerMetadataImg(true));
+                    fs.unlinkSync(`./tmp/${filename}.png`);
                 });
                 break;
 
@@ -1432,7 +1434,7 @@ const main = async (client, message) => {
                 try {
                     if (args.length == 0) return client.reply(from, mess[lang].wrongUse.andName(prefix + command), id)
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    const seanl = await axios.get(`https://api.genderize.io/?name=${args[0]}`)
+                    const seanl = await axios.get(`https://api.genderize.io/?name=${encodeURIComponent(args[0])}`)
                     const gender = seanl.data.gender.replace('female', mess[lang].gender.female()).replace('male', mess[lang].gender.male())
                     await client.reply(from, mess[lang].gender.resp(gender, seanl.data.name), id)
                 } catch (err) {
@@ -1472,9 +1474,9 @@ const main = async (client, message) => {
                     if (args.length === 0) {
                         seed = Math.floor(Math.random() * (9999999999 - 1000000000));
                     } else {
-                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                        seed = args.join('').replace(/\./gi, '');
                     };
-                    if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
+                    if (args.join('').replace(/\./gi, '').length > 100) return client.reply(from, mess[lang].maxText(100), id);
 
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/human/${encodeURIComponent(seed)}.svg`, 'pixelgen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
@@ -1490,9 +1492,9 @@ const main = async (client, message) => {
                     if (args.length === 0) {
                         seed = Math.floor(Math.random() * (9999999999 - 1000000000));
                     } else {
-                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                        seed = args.join('').replace(/\./gi, '');
                     };
-                    if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
+                    if (args.join('').replace(/\./gi, '').length > 100) return client.reply(from, mess[lang].maxText(100), id);
 
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/bottts/${seed}.svg`, 'botgen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
@@ -1508,9 +1510,9 @@ const main = async (client, message) => {
                     if (args.length === 0) {
                         seed = Math.floor(Math.random() * (9999999999 - 1000000000));
                     } else {
-                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                        seed = args.join('').replace(/\./gi, '');
                     };
-                    if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
+                    if (args.join('').replace(/\./gi, '').length > 100) return client.reply(from, mess[lang].maxText(100), id);
 
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/avataaars/${seed}.svg`, 'avatargen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
@@ -1526,9 +1528,9 @@ const main = async (client, message) => {
                     if (args.length === 0) {
                         seed = Math.floor(Math.random() * (9999999999 - 1000000000));
                     } else {
-                        seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
+                        seed = args.join('').replace(/\./gi, '');
                     };
-                    if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
+                    if (args.join('').replace(/\./gi, '').length > 100) return client.reply(from, mess[lang].maxText(100), id);
 
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/micah/${seed}.svg`, 'avatargen2.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
@@ -1954,7 +1956,10 @@ const main = async (client, message) => {
                 if (!query || args.length < 1 || !args) return client.reply(from, mess[lang].wrongUse.andSearch(prefix + command), id);
                 if (query.length > 100) return client.reply(from, mess[lang].maxText(100), id);
                 try {
-                    var imageF = await imageFromGoogle.get(query);
+                    var imageF = await imageFromGoogle.get(query, {
+                        headless: true,
+                        executablePath: executablePath
+                    });
                     if (imageF.includes("No results found")) return client.reply(from, mess[lang].messages.noResults(), id);
                     await client.sendFile(from, imageF, 'img.png', '', id);
                 } catch (e) {
@@ -2381,11 +2386,6 @@ const main = async (client, message) => {
                 var totalMem = chat.groupMetadata.participants.length || 0;
                 var desc = chat.groupMetadata.desc || mess[lang].messages.noDesc();
                 var groupname = name || formattedTitle || mess[lang].messages.noName();
-                let admgp = '';
-                for (let admon of groupAdmins) {
-                    admgp += `-> @${admon.replace(/@c.us/g, '')}\n`;
-                }
-                var gpOwner = chat.groupMetadata.owner;
                 var welgrp = db.get('welcome').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var xpgp = db.get('gamexp').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
                 var lzex = db.get('antilink').includes(groupId) ? mess[lang].messages.enabled() : mess[lang].messages.disabled();
@@ -2401,7 +2401,7 @@ const main = async (client, message) => {
                 } else {
                     pfp = grouppic;
                 };
-                var textF = mess[lang].groupinfo.info({ groupname, totalMem, welgrp, lzex, xpgp, autostk, prefix, desc, gpOwner, admgp });
+                var textF = mess[lang].groupinfo.info({ groupname, totalMem, welgrp, lzex, xpgp, autostk, prefix, desc });
                 if (pfp == false || pfp.includes('ERROR: 404')) {
                     client.sendFile(from, './media/welcome/pfo.jpg', 'pfo.jpg', textF, id)
                         .catch(() => {
@@ -3128,6 +3128,7 @@ const main = async (client, message) => {
             case 'gpt':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
+                if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id);
                 if (processedMessages.includes(id) || !body.startsWith(prefix)) return message;
                 processedMessages.push(id);
                 var content = body.slice(prefix.length + command.length + 1);
@@ -3187,11 +3188,10 @@ const main = async (client, message) => {
             case 'delete':
             case 'erase':
             case 'excluir':
-                await client.simulateTyping(from, true);
                 await client.sendSeen(from);
+                if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 if (!isGroupAdmins) return client.reply(from, mess[lang].onlyAdmins(), id)
                 if (!quotedMsg) return client.reply(from, mess[lang].wrongUse.quotingMyMessage(prefix + command), id)
-                if (!quotedMsgObj.fromMe) return client.reply(from, mess[lang].wrongUse.quotingMyMessage(prefix + command), id)
                 client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
                 break
 
