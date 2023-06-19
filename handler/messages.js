@@ -29,17 +29,12 @@ const config = require('../settings/config.json');
 const { Configuration, OpenAIApi } = require("openai");
 
 // Paths
-const { meme, fetcher, conversao, imgEditor, translate, api, functions, rank, imageFromGoogle, marriage, utils, mess } = require('../lib');
+const { fetcher, conversao, imgEditor, translate, api, functions, rank, imageFromGoogle, marriage, utils, mess } = require('../lib');
 const { sleep, createDir } = functions;
 const { msgFilter, color, processTime } = utils;
-const { uploadImages } = fetcher;
+const { uploadImages, fetchBase64 } = fetcher;
 
-var ffmpegPath;
-if (isOs('win32')) {
-    ffmpegPath = './ffmpeg/bin/ffmpeg.exe'; // Windows
-} else {
-    ffmpegPath = '/usr/bin/ffmpeg'; // Linux and others
-};
+var ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
 if (config.save_musics) createDir('./media/musics');
 
@@ -2214,10 +2209,12 @@ const main = async (client, message) => {
                     bottom == "" ? bottom = "_" : bottom = bottom;
                     var encryptMedia = isQuotedMsg ? quotedMsg : message
                     var mediaData = await decryptMedia(encryptMedia, uaOverride)
-                    var getUrl = await uploadImages(mediaData, false)
-                    var imageBase64 = await meme.custom(getUrl, top, bottom)
-                    client.sendFile(from, imageBase64, 'image.png', '', id)
-                        .catch((err) => console.error(err))
+                    var imageUrl = await uploadImages(mediaData, false)
+
+                    var topText = top.trim().replace(/\s/g, '_').replace(/\?/g, '~q').replace(/\%/g, '~p').replace(/\#/g, '~h').replace(/\//g, '~s');
+                    var bottomText = bottom.trim().replace(/\s/g, '_').replace(/\?/g, '~q').replace(/\%/g, '~p').replace(/\#/g, '~h').replace(/\//g, '~s');
+                    fetchBase64(`https://api.memegen.link/images/custom/${encodeURIComponent(topText)}/${encodeURIComponent(bottomText)}.png?background=${imageUrl}`, 'image/png')
+                        .then(async(result) => await client.sendFile(from, result, 'image.png', '', id).catch((err) => console.error(err)));
                 } else {
                     await client.reply(from, mess[lang].meme.wrongUse(prefix + command), id)
                 }
