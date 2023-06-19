@@ -1,6 +1,6 @@
 {
 	"owners": [""],
-	"defaultPrefix": "#",
+	"defaultPrefix": ".",
 	"executablePath": "/usr/bin/google-chrome-stable",
 	"only_groups": false,
 	"antispam": true,

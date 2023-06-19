@@ -1475,7 +1475,7 @@ const main = async (client, message) => {
                         seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
                     };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    
+
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/human/${encodeURIComponent(seed)}.svg`, 'pixelgen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
@@ -1511,7 +1511,7 @@ const main = async (client, message) => {
                         seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
                     };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    
+
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/avataaars/${seed}.svg`, 'avatargen.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
@@ -1529,7 +1529,7 @@ const main = async (client, message) => {
                         seed = body.slice(prefix.length + command.length + 1).replace(/\./gi, '');
                     };
                     if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                    
+
                     await client.sendFileFromUrl(from, `https://avatars.dicebear.com/api/micah/${seed}.svg`, 'avatargen2.svg', 'Seed: "' + seed + '"', id)
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id)
