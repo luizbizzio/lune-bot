@@ -1,9 +1,8 @@
 {
 	"owners": [""],
-	"defaultPrefix": "#",
-	"executablePath": "/usr/bin/google-chrome-stable",
+	"defaultPrefix": ".",
 	"only_groups": false,
-	"antispam": true,
+	"antispam": false,
 	"save_musics": false,
 	"spam_limit": 5,
 	"spam_delay": 4000,

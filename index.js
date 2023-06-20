@@ -2,7 +2,6 @@ const wa = require('@open-wa/wa-automate');
 const fs = require('fs-extra');
 const { color } = require('./lib/utils.js');
 const { createDir, deleteDir } = require('./lib/functions');
-const msgHandler = require('./handler/messages.js');
 const canvas = require('discord-canvas');
 const figlet = require('figlet');
 const moment = require('moment-timezone');
@@ -12,6 +11,8 @@ const db = require('quick.db');
 const { mess } = require('./lib');
 const config = require('./settings/config.json');
 const package = require('./package.json');
+const chromePaths = require('chrome-paths');
+const executablePath = chromePaths.chrome;
 
 const { isOs, threatOsName } = require('./lib/checkos.js');
 const chalk = require('chalk');
@@ -31,9 +32,12 @@ const start = async (client) => {
 		console.log(color('[INFO]', 'blue'), 'Anti-spam:', color(config.antispam ? 'Enabled' : 'Disabled', config.antispam ? 'green' : 'red'));
 		console.log(color('[INFO]', 'blue'), 'Only groups:', color(config.only_groups ? 'Enabled' : 'Disabled', config.only_groups ? 'green' : 'red'));
 		console.log(color('[INFO]', 'blue'), 'Save musics:', color(config.save_musics ? 'Enabled' : 'Disabled', config.save_musics ? 'green' : 'red'));
+		console.log(color('[INFO]', 'blue'), 'Chrome Path:', color(executablePath, 'blue'));
 		console.log(color('[INFO]', 'blue'), 'Running on:', color(currentOs, 'blue'));
 		console.log(color('[STARTED]', 'green'), color(time, 'green'));
 	});
+
+	client.darkMode(true).catch(() => {});
 
 	client.setPresence(true);
 
@@ -67,6 +71,7 @@ const start = async (client) => {
 
 		// Handler
 		if (message.sender && message.sender.id && (isowner || (config.only_groups && message.isGroupMsg) || !config.only_groups)) {
+			const msgHandler = require('./handler/messages.js');
 			msgHandler.runBot(client, message).then((val) => {
 				console.log(val);
 			});
@@ -201,28 +206,26 @@ const start = async (client) => {
 
 const options = {
 	sessionId: 'session',
+	executablePath: executablePath,
 	multiDevice: true,
 	headless: true,
 	qrTimeout: 0,
-	authTimeout: 30,
+	authTimeout: 60,
 	killProcessOnTimeout: true,
 	restartOnCrash: start,
-	cacheEnabled: true,
+	cacheEnabled: false,
 	disableSpins: true,
 	useChrome: true,
 	legacy: false,
 	killProcessOnBrowserClose: true,
 	deleteSessionDataOnLogout: true,
+	blockCrashLogs: true,
 	throwErrorOnTosBlock: false,
 	waitForRipeSession: true,
 	devtools: false,
 	debug: false,
 	popup: false,
 	skipUpdateCheck: true,
-};
-
-if (!isOs('win32')) {
-	options.executablePath = config.executablePath;
 };
 
 function create() {
@@ -240,4 +243,9 @@ function create() {
 			process.exit(1);
 		});
 };
+
+module.exports = {
+	executablePath
+}
+
 create();
