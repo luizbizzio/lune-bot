@@ -88,7 +88,7 @@ const start = async (client) => {
 
 		db.set(`welcomedUsers.${event.id}`, { users: groupMembersFormatted });
 
-		if (db.get('welcome').includes(event.id)) return;
+		if (db.get('welcome') && db.get('welcome').includes(event.id)) return;
 		db.push('welcome', event.id);
 	});
 
@@ -207,6 +207,9 @@ const start = async (client) => {
 const options = {
 	sessionId: 'session',
 	executablePath: executablePath,
+	forcePort: true,
+	port: '8002',
+	logFile: 'zapzap.log',
 	multiDevice: true,
 	headless: true,
 	qrTimeout: 0,
@@ -217,6 +220,7 @@ const options = {
 	disableSpins: true,
 	useChrome: true,
 	legacy: false,
+	keepAlive: true,
 	killProcessOnBrowserClose: true,
 	deleteSessionDataOnLogout: true,
 	blockCrashLogs: true,
@@ -224,7 +228,7 @@ const options = {
 	waitForRipeSession: true,
 	devtools: false,
 	debug: false,
-	popup: false,
+	popup: true,
 	skipUpdateCheck: true,
 };
 

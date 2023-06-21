@@ -1552,6 +1552,12 @@ const main = async (client, message) => {
                 };
 
                 var dics = dicev.split("d");
+                if (dics.length < 2) {
+                    dics[1] = dics[0];
+                    dics[0] = '1';
+                    dicev = dics[0]+'d'+dics[1];
+                };
+                
                 var dicsplus = dics[1].split("+");
                 var dicsminus = dics[1].split("-");
 
@@ -1582,7 +1588,7 @@ const main = async (client, message) => {
                 if (dics[0] < 1) return client.reply(from, mess[lang].roll.minDices(1), id);
                 if (dics[1] < 1) return client.reply(from, mess[lang].roll.minFaces(1), id);
                 if (dics[0] > 100) return client.reply(from, mess[lang].roll.maxDices(100), id);
-                if (dics[1] > 1000) return client.reply(from, mess[lang].roll.maxFaces(1000), id);
+                if (dics[1] > 100000) return client.reply(from, mess[lang].roll.maxFaces(100000), id);
 
                 var dadosFinais = '[';
                 var arrDados = [];
@@ -2168,11 +2174,11 @@ const main = async (client, message) => {
             case 'triggered':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                if (isMedia && type === 'image' || isQuotedImage) {
+                if (isMedia && type === 'image' || isQuotedImage || isQuotedSticker) {
                     createDir('./tmp');
                     var path = "./tmp/" + Math.random().toString(36).substring(7);
                     try {
-                        const triggermd = isQuotedImage ? quotedMsg : message
+                        const triggermd = isQuotedMsg ? quotedMsg : message
                         const upTrigger = await decryptMedia(triggermd, uaOverride);
                         await canvas.Canvas.trigger(upTrigger)
                             .then(async (vv) => {

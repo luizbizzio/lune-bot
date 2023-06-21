@@ -18,7 +18,8 @@
   "keywords": [
     "whatsapp",
     "bot",
-    "automated"
+    "javascript",
+    "automation"
   ],
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
