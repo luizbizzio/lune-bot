@@ -225,12 +225,28 @@ const main = async (client, message) => {
                 const neededXp = 5 * Math.pow(levelAtual, 2) + 50 * levelAtual + 100 + Math.floor(levelAtual * 2);
                 const theuzlvl = rank.getLevel(user, db.get('level'), pushname);
                 rank.addXp(user, xpAtual, db.get('level'), pushname);
+
                 if (neededXp <= rank.getXp(user, db.get('level'), pushname)) {
-                    rank.addLevel(user, 1, db.get('level'));
-                    const thexpnde = 5 * Math.pow(theuzlvl, 2) + 50 * (theuzlvl + 1) + 100;
-                    const uzerlvl = rank.getLevel(user, db.get('level'), pushname);
-                    await client.reply(from, mess[lang].xp.newLevel(pushname, rank.getXp(user, db.get('level'), pushname), thexpnde, uzerlvl, patente), id);
-                }
+                    let i = 0;
+                    let upLevel = true;
+                    while (i < 1000 && upLevel) {
+                        rank.wait(user);
+                        if ((5 * Math.pow(rank.getLevel(user, db.get('level'), pushname), 2) + 50 * rank.getLevel(user, db.get('level'), pushname) + 100) + rank.getLevel(user, db.get('level'), pushname) <= rank.getXp(user, db.get('level'), pushname)) {
+                            rank.addLevel(user, 1, db.get('level'), pushname);
+                        } else {
+                            patents = mess[lang].tiers();
+                            var check = rank.getLevel(user, db.get('level'), pushname);
+                            for (i in patents) {
+                                if (check >= patents[i].lv) {
+                                    patente = patents[i].name + " " + patents[i].emoji;
+                                };
+                            };
+                            await client.reply(from, mess[lang].xp.newLevel(pushname, rank.getXp(user, db.get('level'), pushname), (5 * Math.pow(rank.getLevel(user, db.get('level'), pushname), 2) + 50 * (rank.getLevel(user, db.get('level'), pushname) + 1) + 100), (rank.getLevel(user, db.get('level'), pushname)), patente), id);
+                            upLevel = false;
+                        };
+                        i++;
+                    };
+                };
             } catch (err) {
                 console.error(err);
             };
@@ -804,24 +820,6 @@ const main = async (client, message) => {
                 await client.reply(from, mess[lang].xp.finalMsgTiers(pushname, peoLeveltwo, peoXptwo, ineedxptwo), id)
                 break
 
-            case 'upforce':
-            case 'forceup':
-            case 'rankup':
-                await client.simulateTyping(from, true);
-                await client.sendSeen(from);
-                if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id);
-                if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id)
-                for (let i = 0; i < 200; i++) {
-                    rank.wait(user);
-                    if ((5 * Math.pow(rank.getLevel(user, db.get('level'), pushname), 2) + 50 * rank.getLevel(user, db.get('level'), pushname) + 100) + rank.getLevel(user, db.get('level'), pushname) <= rank.getXp(user, db.get('level'), pushname)) {
-                        rank.addLevel(user, 1, db.get('level'), pushname);
-                    } else {
-                        if (i < 1) return client.reply(from, mess[lang].xp.insuficientXpToUp(), id);
-                        return client.reply(from, mess[lang].xp.forceUp(pushname, rank.getXp(user, db.get('level'), pushname), (5 * Math.pow(rank.getLevel(user, db.get('level'), pushname), 2) + 50 * rank.getLevel(user, db.get('level'), pushname) + 100), rank.getLevel(user, db.get('level'), pushname), patente, (i + 1)), id);
-                    };
-                };
-                break;
-
             case 'rank':
             case 'players':
             case 'player':
@@ -1267,8 +1265,8 @@ const main = async (client, message) => {
 
                 if (!imgMoe || imgMoe == '') return client.reply(from, mess[lang].somethingWentWrong(), id);
 
-                await client.sendImage(from, imgMoe, 'moe.png', '', id);
-                break
+                await client.sendImagesSticker(from, imgMoe, mess[lang].stickerMetadataImg(true), id);
+                break;
 
             // pip install rembg
             case 'lnobg':
@@ -1465,7 +1463,7 @@ const main = async (client, message) => {
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
                 try {
-                    await client.sendImage(from, `https://thispersondoesnotexist.com`, 'facegen.png', '', id);
+                    await client.sendImageAsSticker(from, `https://thispersondoesnotexist.com`, mess[lang].stickerMetadataImg(true), id);
                 } catch (err) {
                     client.reply(from, mess[lang].somethingWentWrong(), id);
                 };
@@ -3216,7 +3214,7 @@ const main = async (client, message) => {
                         .then(async (c) => {
                             var base64b = new Buffer.from(c).toString("base64");
                             var b64b = "data:image/png;base64," + base64b;
-                            await client.sendFile(from, b64b, 'image.png', '', id);
+                            await client.sendImageAsSticker(from, b64b, mess[lang].stickerMetadataImg(true), id);
                         });
                 } else {
                     await client.reply(from, mess[lang].wrongUse.quotingImage(prefix + command), id)
