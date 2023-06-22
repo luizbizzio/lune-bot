@@ -1,6 +1,5 @@
 // Initialization
 const { decryptMedia } = require('@open-wa/wa-automate');
-const { isOs } = require('../lib/checkos');
 const moment = require('moment-timezone');
 moment.tz.setDefault('America/Sao_paulo').locale('pt');
 require('better-node-gtts');
@@ -131,7 +130,7 @@ const main = async (client, message) => {
 
         body = (type === 'chat' && body.startsWith(prefix) ? body : (((type === 'image' || type === 'video') && caption) && caption.startsWith(prefix)) ? caption : '')
         var command = body.slice(prefix.length).trim().split(/ +/).shift().toLowerCase();
-        if (body.startsWith('# ')) return;
+        if (body.startsWith(prefix+' ')) return;
         const arg = body.substring(body.indexOf(' ') + 1)
         const args = body.trim().split(/ +/).slice(1)
         const isCmd = body.startsWith(prefix)
@@ -206,10 +205,10 @@ const main = async (client, message) => {
 
         // Tier System
         var patents;
+        var patente;
         if (isGroupMsg && isxp) {
             patents = mess[lang].tiers();
-            const check = rank.getLevel(user, db.get('level'), pushname);
-            var patente;
+            var check = rank.getLevel(user, db.get('level'), pushname);
             for (i in patents) {
                 if (check >= patents[i].lv) {
                     patente = patents[i].name + " " + patents[i].emoji;
@@ -546,8 +545,10 @@ const main = async (client, message) => {
                 var owaVerJson = JSON.parse(fs.readFileSync('./node_modules/@open-wa/wa-automate/package.json'));
                 var owaVer = owaVerJson.version;
 
-                await client.reply(from, mess[lang].sys.resp(processTime(t, moment()), loadedMsgs, groupss, chatIdss, timeBot, osUptime(), os.cpus()[0].model.replace(/          /g, ''), os.cpus()[0].speed, os.type(), os.arch(), os.platform, os.release(), ramMemory(), os.userInfo().username, os.hostname(), zapVer, owaVer), id);
-                break
+                var package = JSON.parse(fs.readFileSync('./package.json'));
+
+                await client.reply(from, mess[lang].sys.resp(processTime(t, moment()), loadedMsgs, groupss, chatIdss, timeBot, osUptime(), os.cpus()[0].model.replace(/          /g, ''), os.cpus()[0].speed, os.type(), os.arch(), os.platform, os.release(), ramMemory(), os.userInfo().username, os.hostname(), zapVer, owaVer, package.version, config.defaultPrefix, botNumber.replace('@c.us', ''), config.owners, config.antispam, config.only_groups, config.save_musics), id);
+                break;
 
             //XP
             case 'cassino':
@@ -563,20 +564,20 @@ const main = async (client, message) => {
                 var bet = Math.floor(Number(args[0]));
                 if (bet < 30) return client.reply(from, mess[lang].games.tooLowVal("30", checkxpc), id)
                 if (bet > checkxpc || bet > 500) return client.reply(from, mess[lang].games.tooHighVal(checkxpc, 500), id)
-                var ncasxp = Math.floor(Math.random() * -100) - bet;
-                if (ncasxp > 700 || ncasxp < -700) ncasxp = Math.floor(Math.random() * -100) - 300
-                var pcasxp = Math.floor(Math.random() * 200) + bet;
-                if (pcasxp > 700) pcasxp = Math.floor(Math.random() * 100) + 500;
+                var ncasxp = -bet;
+                var pcasxp = bet*(Math.floor(Math.random() * (40 - 25)) + 25);
                 var cassin = ['7️⃣', '🍒', '🎃']
                 const cassin1 = cassin[Math.floor(Math.random() * cassin.length)]
                 const cassin2 = cassin[Math.floor(Math.random() * cassin.length)]
                 const cassin3 = cassin[Math.floor(Math.random() * cassin.length)]
                 var cassinend = cassin1 + cassin2 + cassin3
                 if (cassinend == '7️⃣7️⃣7️⃣' || cassinend == '🍒🍒🍒' || cassinend == '🎃🎃🎃') {
-                    await client.reply(from, `${mess[lang].games.cwin({ e1: cassin1, e2: cassin2, e3: cassin3 }, pcasxp)}\n\n${mess[lang].xp.actualChance("3,7")}`, id)
-                    rank.addXp(user, pcasxp, db.get('level'), pushname)
+                    if (Math.random() > 0.5) {
+                        await client.reply(from, `${mess[lang].games.cwin({ e1: cassin1, e2: cassin2, e3: cassin3 }, pcasxp)}\n\n${mess[lang].xp.actualChance("1.85")}`, id)
+                        rank.addXp(user, pcasxp, db.get('level'), pushname)
+                    };
                 } else {
-                    await client.reply(from, `${mess[lang].games.close({ e1: cassin1, e2: cassin2, e3: cassin3 }, ncasxp)}\n\n${mess[lang].xp.actualChance("3,7")}`, id)
+                    await client.reply(from, `${mess[lang].games.close({ e1: cassin1, e2: cassin2, e3: cassin3 }, ncasxp)}\n\n${mess[lang].xp.actualChance("1.85")}`, id)
                     rank.addXp(user, ncasxp, db.get('level'), pushname)
                 }
                 break
@@ -589,25 +590,20 @@ const main = async (client, message) => {
                 if (!isGroupMsg) return await client.reply(from, mess[lang].xp.onlyGroupsWithXp(), id)
                 if (!isxp) return client.reply(from, mess[lang].xp.xpIsOff(), id);
                 const checkxpr = rank.getXp(user, db.get('level'), pushname)
-                const doublerol = Math.floor(Math.random() * 3) + 1
+                const doublerol = Math.floor(Math.random() * 6) + 1
                 if (checkxpr <= 2000) return client.reply(from, mess[lang].games.tooLowXp("2.000", checkxpr), id)
                 if (args.length !== 1) return client.reply(from, mess[lang].games.specifyAmount(), id)
                 if (isNaN(args[0])) return client.reply(from, mess[lang].games.onlyNum(), id)
                 var bet = Math.floor(Number(args[0]));
                 if (bet >= checkxpr || bet >= '251') return client.reply(from, mess[lang].games.tooHighVal(checkxpr, 250), id)
                 if (bet < '30') return client.reply(from, mess[lang].games.tooLowVal(30), id)
-                var nrolxp = Math.floor(Math.random() * -300) - bet;
-                if (nrolxp > 700 || nrolxp < -700) nrolxp = Math.floor(Math.random() * -300) - 300
-                var prolxp = Math.floor(Math.random() * 200) + bet;
-                if (prolxp > 700) prolxp = Math.floor(Math.random() * 200) + 500;
-                if (doublerol == 1) {
-                    await client.reply(from, `${mess[lang].games.rlose(nrolxp)}\n\n${mess[lang].xp.actualChance(25)}`, id)
+                var nrolxp = -bet;
+                var prolxp = bet*(Math.floor(Math.random() * (6 - 3)) + 3);
+                if (doublerol < 6) {
+                    await client.reply(from, `${mess[lang].games.rlose(nrolxp)}\n\n${mess[lang].xp.actualChance(16)}`, id)
                     rank.addXp(user, nrolxp, db.get('level'), pushname)
-                } else if (doublerol == 2) {
-                    await client.reply(from, `${mess[lang].games.rlose(nrolxp)}\n\n${mess[lang].xp.actualChance(25)}`, id)
-                    rank.addXp(user, nrolxp, db.get('level'), pushname)
-                } else if (doublerol == 3) {
-                    await client.reply(from, `${mess[lang].games.rwin(prolxp)}\n\n${mess[lang].xp.actualChance(25)}`, id)
+                } else if (doublerol == 6) {
+                    await client.reply(from, `${mess[lang].games.rwin(prolxp)}\n\n${mess[lang].xp.actualChance(16)}`, id)
                     rank.addXp(user, prolxp, db.get('level'), pushname)
                 }
                 break
@@ -840,7 +836,16 @@ const main = async (client, message) => {
 
                 var boardf = mess[lang].top10.top();
                 try {
-                    var patente;
+                    if (!patents) {
+                        patents = mess[lang].tiers();
+                        var check = rank.getLevel(user, db.get('level'), pushname);
+                        for (i in patents) {
+                            if (check >= patents[i].lv) {
+                                patente = patents[i].name + " " + patents[i].emoji;
+                            };
+                        };
+                    };
+
                     for (let i = 0; i < playersTop; i++) {
                         var role;
                         for (b in patents) {
@@ -1978,8 +1983,8 @@ const main = async (client, message) => {
             case 'upimagem':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                if (isMedia && type === 'image' || isQuotedImage) {
-                    const upimgoh = isQuotedImage ? quotedMsg : message
+                if ((isMedia && type === 'image') || isQuotedImage || isQuotedSticker) {
+                    const upimgoh = isQuotedMsg ? quotedMsg : message
                     const mediaData = await decryptMedia(upimgoh, uaOverride)
                     createDir('./tmp');
                     var uplimg = './tmp/' + Math.random().toString(26).substring(7) + '.jpg'
@@ -2149,10 +2154,10 @@ const main = async (client, message) => {
                 if (args.length < 2) return client.reply(from, mess[lang].comment.wrongUse(prefix + command), id)
                 if (!body.slice('9').includes('|')) return client.reply(from, mess[lang].comment.wrongUse(prefix + command), id)
                 if (body.slice(prefix.length + command.length + 1).length > 100) return client.reply(from, mess[lang].maxText(100), id);
-                if (isMedia && type === 'image' || isQuotedImage && args.length >= 2) {
-                    const top = arg.split('|')[0]
-                    const bottom = arg.split('|')[1]
-                    const encryptMedia = isQuotedImage ? quotedMsg : message
+                if (isMedia && type === 'image' || isQuotedSticker || isQuotedImage && args.length >= 2) {
+                    const top = arg.split('|')[0] || ' ';
+                    const bottom = arg.split('|')[1] || ' '
+                    const encryptMedia = isQuotedMsg ? quotedMsg : message
                     const mediaData = await decryptMedia(encryptMedia, uaOverride)
                     await canvas.Canvas.youtube({
                         username: top,
@@ -2205,21 +2210,25 @@ const main = async (client, message) => {
             case 'gsbl':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                if (!isQuotedImage && !(isMedia && type == 'image')) return client.reply(from, mess[lang].wrongUse.quotingImage(prefix + command), id);
-                var qtl = isQuotedMsg ? quotedMsg : message;
-                var mediaData = await decryptMedia(qtl, uaOverride);
+                if (!isQuotedImage && !(isMedia && type == 'image') && !isQuotedSticker) return client.reply(from, mess[lang].wrongUse.quotingImage(prefix + command), id);
+                try {
+                    var qtl = isQuotedMsg ? quotedMsg : message;
+                    var mediaData = await decryptMedia(qtl, uaOverride);
 
-                createDir('./tmp');
-                var path = "./tmp/" + Math.random().toString(36).substring(7);
-                var filetype = qtl.mimetype.split('/')[1];
+                    createDir('./tmp');
+                    var path = "./tmp/" + Math.random().toString(36).substring(7);
+                    var filetype = qtl.mimetype.split('/')[1];
 
-                fs.writeFileSync(path + "." + filetype, mediaData, 'base64');
-                await exec("gsbl " + path + "." + filetype + " " + path + ".mp4 -r 500 500 -s 0.7 --line-bg-color 0 0 0", async function (error) {
-                    if (error) { console.log(error); return client.reply(from, mess[lang].somethingWentWrong(), id); };
-                    await client.sendFile(from, path + ".mp4", 'gsbl.mp4', 'Get Stick Bugged Lol!', id);
-                    fs.unlinkSync(path + ".mp4");
-                    fs.unlinkSync(path + "." + filetype);
-                })
+                    fs.writeFileSync(path + "." + filetype, mediaData, 'base64');
+                    await exec("gsbl " + path + "." + filetype + " " + path + ".mp4 -r 500 500 -s 0.7 --line-bg-color 0 0 0", async function (error) {
+                        if (error) { console.log(error); return client.reply(from, mess[lang].somethingWentWrong(), id); };
+                        await client.sendFile(from, path + ".mp4", 'gsbl.mp4', 'Get Stick Bugged Lol!', id);
+                        fs.unlinkSync(path + ".mp4");
+                        fs.unlinkSync(path + "." + filetype);
+                    })
+                } catch (e) {
+                    client.reply(from, mess[lang].somethingWentWrong(), id);
+                };
                 break
 
             case 'meme':
@@ -2230,7 +2239,7 @@ const main = async (client, message) => {
                 if (!arb.includes('|')) return client.reply(from, mess[lang].meme.wrongUse(prefix + command), id)
                 if (arb.length > 100) return client.reply(from, mess[lang].maxText(100), id);
 
-                if (isMedia && type === 'image' || isQuotedImage && args.length >= 2) {
+                if ((isMedia && type === 'image') || isQuotedImage && args.length >= 2) {
                     var top, bottom;
                     if (arb.includes(' | ')) {
                         top = arb.split(' | ')[0];
@@ -2467,6 +2476,10 @@ const main = async (client, message) => {
                     await client.removeParticipant(groupId, mentionedJidList[0]);
 
                 };
+                break;
+
+            case 'test':
+                await client.removeParticipant(groupId, mentionedJidList[0]);
                 break;
 
             case 'add':
@@ -3176,8 +3189,8 @@ const main = async (client, message) => {
             case 'gtav':
                 await client.simulateTyping(from, true);
                 await client.sendSeen(from);
-                if (isMedia && type === 'image' || isQuotedImage) {
-                    const wastedmd = isQuotedImage ? quotedMsg : message
+                if (isMedia && type === 'image' || isQuotedImage || isQuotedSticker) {
+                    const wastedmd = isQuotedMsg ? quotedMsg : message
                     const wstddt = await decryptMedia(wastedmd, uaOverride)
                     await canvas.Canvas.wasted(wstddt)
                         .then(async (c) => {
@@ -3198,7 +3211,8 @@ const main = async (client, message) => {
                 if (!isGroupMsg) return client.reply(from, mess[lang].onlyGroups(), id)
                 if (!isGroupAdmins) return client.reply(from, mess[lang].onlyAdmins(), id)
                 if (!quotedMsg) return client.reply(from, mess[lang].wrongUse.quotingMyMessage(prefix + command), id)
-                client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
+                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
+                await client.deleteMessage(quotedMsgObj.chatId, id, false)
                 break
 
             case 'adminslist':
