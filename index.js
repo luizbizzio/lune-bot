@@ -144,6 +144,8 @@ const start = async (client) => {
 			};
 		};
 
+        var prefix = db.get(`prefix.${personr}`) || config.defaultPrefix;
+
 		try {
 			if (event.action == 'add') {
 				if (db.get('welcomedUsers').hasOwnProperty(event.chat)) {
@@ -173,7 +175,7 @@ const start = async (client) => {
 						.setBackground(linkWelcome)
 						.toAttachment();
 					const base64 = `data:image/png;base64,${welcomer.toBuffer().toString('base64')}`;
-					await client.sendFile(event.chat, base64, 'welcome.png', `${mess[lang].welcome.resp(pushname, name, formattedTitle)}`);
+					await client.sendFile(event.chat, base64, 'welcome.png', `${mess[lang].welcome.resp(prefix, pushname, name, formattedTitle)}`);
 
 					db.push(`welcomedUsers.${event.chat}.users`, event.who);
 					console.log(color('[WELCOME]', 'blue'), color(`${event.who.replace("@c.us", "")}`), '-', color(pushname), 'joined', color(`"${name || formattedTitle}"`));
