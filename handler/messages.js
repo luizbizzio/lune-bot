@@ -129,6 +129,7 @@ const main = async (client, message) => {
         prefix = db.get(`prefix.${oqid}`) || config.defaultPrefix;
 
         body = (type === 'chat' && body.startsWith(prefix) ? body : (((type === 'image' || type === 'video') && caption) && caption.startsWith(prefix)) ? caption : '')
+        if (body == prefix) return;
         var command = body.slice(prefix.length).trim().split(/ +/).shift().toLowerCase();
         if (body.startsWith(prefix+' ')) return;
         const arg = body.substring(body.indexOf(' ') + 1)
