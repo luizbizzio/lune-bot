@@ -238,10 +238,10 @@ function create() {
 	wa.create(options)
 		.then(client => {
 			try {
-				start(client);
+				start(client)
 			} catch (err) {
-				client.kill();
-				create();
+				client.kill()
+				create()
 			};
 		})
 		.catch(err => {
