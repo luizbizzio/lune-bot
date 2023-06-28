@@ -12,7 +12,7 @@ const { mess } = require('./lib');
 const config = require('./settings/config.json');
 const package = require('./package.json');
 const chromePaths = require('chrome-paths');
-const executablePath = chromePaths.chrome;
+const executablePath = chromePaths.chrome
 
 const { isOs, threatOsName } = require('./lib/checkos.js');
 const chalk = require('chalk');
