@@ -2174,17 +2174,7 @@ const main = async (client, message) => {
                     await client.reply(from, mess[lang].wrongUse.twoWords(prefix + command), id)
                 }
                 break
-
-            case 'test':
-                const auth = await spawn(new Worker("./commands/pkm"));
-                await auth.run({ client, message, lang })
-
-                await Thread.terminate(auth)
-
-                //var cmdt = require('./commands/pkm');
-                //cmdt.run(client, message, lang)
-                break;
-
+                
             case 'trigger':
             case 'triggered':
                 client.simulateTyping(from, true);
