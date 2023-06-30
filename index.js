@@ -13,8 +13,7 @@ const config = require('./settings/config.json');
 const package = require('./package.json');
 const chromePaths = require('chrome-paths');
 const executablePath = chromePaths.chrome;
-
-const { isOs, threatOsName } = require('./lib/checkos.js');
+const { threatOsName } = require('./lib/checkos.js');
 const chalk = require('chalk');
 
 const currentOs = threatOsName();
@@ -57,7 +56,7 @@ const start = async (client) => {
 	});
 
 	// Listening on message
-	client.onMessage(async message => {
+	client.onAnyMessage(async message => {
 		// Owner checker
 		var isowner = false;
 		var owners = config.owners;
@@ -209,28 +208,15 @@ const start = async (client) => {
 const options = {
 	sessionId: 'session',
 	executablePath: executablePath,
-	forcePort: true,
-	port: '8002',
-	logFile: 'zapzap.log',
 	multiDevice: true,
 	headless: true,
 	qrTimeout: 0,
-	authTimeout: 60,
 	killProcessOnTimeout: true,
 	restartOnCrash: start,
 	cacheEnabled: false,
 	disableSpins: true,
 	useChrome: true,
-	legacy: false,
-	keepAlive: true,
 	killProcessOnBrowserClose: true,
-	deleteSessionDataOnLogout: true,
-	blockCrashLogs: true,
-	throwErrorOnTosBlock: false,
-	waitForRipeSession: true,
-	devtools: false,
-	debug: false,
-	popup: true,
 	skipUpdateCheck: true,
 };
 
@@ -238,15 +224,15 @@ function create() {
 	wa.create(options)
 		.then(client => {
 			try {
-				start(client)
+				start(client);
 			} catch (err) {
-				client.kill()
-				create()
+				client.kill();
+				create();
 			};
 		})
 		.catch(err => {
-			console.log(err)
-			process.exit(1)
+			console.log(err);
+			process.exit(1);
 		});
 };
 
