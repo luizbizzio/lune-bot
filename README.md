@@ -1,1 +1,1 @@
-# lune-bot
+# Lune Bot
