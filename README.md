@@ -1,5 +1,7 @@
 # Lune Bot 🤖 (Deprecated)
 
+2019-2023
+
 This WhatsApp bot, developed in JavaScript, was designed to provide a range of functionalities including entertainment, administration tools, news updates, mini-games, and various utilities. It served as an all-in-one solution for WhatsApp automation and interaction.
 
 > **Important**: As of 2022, this bot is no longer maintained and is considered **deprecated**. It may not work with the latest versions of WhatsApp or its API, and no further updates or support will be provided.
