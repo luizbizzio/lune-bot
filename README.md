@@ -47,7 +47,7 @@ While you are welcome to explore, fork, and use the code, please note that:
 5. [Installation Steps](#-installation-steps)
    - [Step 1: Clone the Repository](#step-1-clone-the-repository)
    - [Step 2: Install Dependencies](#step-2-install-dependencies)
-6. [Running the Bot](-running-the-bot)
+6. [Running the Bot](#-running-the-bot)
 7. [Auto-Start on Reboot](#-auto-start-on-reboot)
 8. [Usage](#-usage)
 9. [Command Categories](#-command-categories)
