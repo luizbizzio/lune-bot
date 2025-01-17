@@ -382,7 +382,7 @@ These keys are used to access external services. Ensure they are kept secure, as
 ## Important Notes
 
 1. **Keep API Keys Secure**: These keys grant access to critical external services and should not be shared publicly.
-2. **Default Configuration**: The default prefix is `.`. You can change it using the appropriate bot command (`setprefix`).
+2. **Default Configuration**: The default prefix is `.` and you can change it using the appropriate bot command (`setprefix`).
 3. **Spam Protection**: The spam protection system can be enabled/disabled and configured as needed.
 
 ---
