@@ -9,7 +9,7 @@
 ---
 
 <p align="center">
-  <img src="media/lune-bot.jpg" alt="Lune Bot Logo" width="200"/>
+  <img src="media/lune-bot.jpg" alt="Lune Bot Logo" width="250"/>
 </p>
 
 ## ✨ Features
