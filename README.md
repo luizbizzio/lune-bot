@@ -1,8 +1,9 @@
 
 # 🤖 Lune Bot
 
-> **A Multifunctional WhatsApp Bot**  
-> Powered by **Node.js** and designed to bring fun, utility, and convenience to your WhatsApp groups and personal chats.
+Lune Bot is a JavaScript-based bot for WhatsApp, launched in 2019. It offers a wide range of features, including entertainment, administrative tools, news updates, mini-games, utilities, and a subscription system for exclusive features. These functionalities make Lune Bot a practical and versatile solution for users, groups, and communities.
+
+Operating in three languages (English, Spanish, and Portuguese), Lune Bot reached over 100,000 users across multiple countries. Its integration was based on the Open WA library, a popular tool for WhatsApp automation. However, in 2023, the project was discontinued due to technical challenges and external limitations that hindered its continuation.
 
 > **Important**: As of 2023, this bot is no longer maintained and is considered **deprecated**. It may not work with the latest versions of WhatsApp or its API, and no further updates or support will be provided.
 
@@ -54,12 +55,12 @@ While you are welcome to explore, fork, and use the code, please note that:
    - [Sticker Menu 🎇](#sticker-menu-)
    - [Images Menu 📸](#images-menu-)
    - [Downloader Menu 📥](#downloader-menu-)
-   - [Fun Menu 🎮️](#fun-menu-)
-   - [Utility Menu 🛠️](#utility-menu-)
+   - [Fun Menu 🎮️](#fun-menu-%EF%B8%8F)
+   - [Utility Menu 🛠️](#utility-menu-%EF%B8%8F)
    - [XP Menu 🧪](#xp-menu-)
    - [Marry Menu 💕](#marry-menu-)
    - [Admin Menu 🔰](#admin-menu-)
-   - [Config Menu ⚙️](#config-menu)
+   - [Config Menu ⚙️](#config-menu-%EF%B8%8F)
    - [About Menu 📃](#about-menu-)
    - [Developer Menu 🧑🏻‍💻](#developer-menu-)
 10. [Settings](#️-lune-bot-settings)
@@ -72,9 +73,8 @@ While you are welcome to explore, fork, and use the code, please note that:
 ## ⚙ Requirements
 
 - [Node.js](https://nodejs.org/download/release/v16.20.1/) **16.20.1** or later (recommended version used during development)
-- [PM2](https://pm2.keymetrics.io/) for process management
+- **Dependencies**: Updated as of **2023**
 - A valid **WhatsApp** account (phone number)
-- (Optional) [FFmpeg](https://ffmpeg.org/) for media/sticker conversion
 
 ---
 
@@ -131,9 +131,11 @@ pm2 startup
 pm2 save
 ```
 
+---
+
 ## 💡 Usage
 
-- **Command Prefix**: By default, Lune Bot uses `.` as its prefix. You can change this (see the [Config Menu ⚙️](#-config-menu-⚙️)).  
+- **Command Prefix**: By default, Lune Bot uses `.` as its prefix. You can change this by editing the `defaultPrefix` value in the `/settings/config.json` file.
 - **Command Format**:
   ```bash
   .<command> [arguments]
@@ -338,7 +340,6 @@ Below is a quick reference to the menus.
 | `.leave`              | Lune Bot leaves the current group.   
 
 ---
-
 
 ## 🛠️ Lune Bot Settings
 
