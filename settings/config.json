@@ -8,17 +8,17 @@
 	"spam_delay": 4000,
 	"block_delay": 30000,
 	"api_keys": {
-		"virus_total": "4a30386f7046a649da12a35d59514417d93dfac2874f07d585c24ed93d99fe94",
-  		"bitly": "9927112f30ac99fbf4dcc842fa89af6022bfe936",
-		"imgbb": "474112448935ee193b684a9b44733fb9",
-		"weather_api": "2590d915ba8847aa903221148231106",
-		"ip_quality_score": "yCWDeqvUq0VuN8juj9cKrHkdUi38WZhj",
-		"genius_lyrics": "vU5EuFDrhdKs69pKpL5VNdgfmFHIsvZl3Fy7s8FQcvf4OtF2PKezQcUbdUPh4108",
-		"chatgpt": "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",
+		"virus_total": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  		"bitly": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		"imgbb": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		"weather_api": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		"ip_quality_score": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		"genius_lyrics": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+		"chatgpt": "xx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 		"acrcloud": {
-			"host": "identify-eu-west-1.acrcloud.com",
-			"api_key": "63129fefa3f8c9ff2ebafb5d7ee24776",
-			"api_secret": "xb5EUgEF1v3TbuBuSt4DPzGmZdUXPxOmHf81B7bZ"
+			"host": "identify-region-1.acrcloud.com",
+			"api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+			"api_secret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 		}
 	}
 }
